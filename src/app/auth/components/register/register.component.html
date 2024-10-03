@@ -1,7 +1,34 @@
-<div>
-    <h2>Sign Up</h2>
-    <input [(ngModel)]="email" type="email" placeholder="Email" />
-    <input [(ngModel)]="password" type="password" placeholder="Password" />
-    
-    <button (click)="signUp()">Sign Up</button>
+<!-- Conteneur avec image de fond et effet de flou -->
+<div class="relative min-h-screen bg-cover bg-center flex flex-col justify-center items-center" style="background-image: url('https://static.vitrine.ynov.com/var/site/storage/images/3/0/8/5/75803-1-fre-FR/3dc5ca9aa11f-ynov-campus-aix-en-provence.jpg'); background-attachment: fixed;">
+
+  <!-- Overlay pour assombrir légèrement l'arrière-plan -->
+  <div class="absolute inset-0 bg-black bg-opacity-40"></div>
+
+  <!-- Formulaire avec effet de transparence et flou -->
+  <div class="relative max-w-lg w-full mt-10 p-8 bg-white bg-opacity-20 backdrop-blur-lg rounded-3xl shadow-2xl transition-transform transform duration-500">
+    <p class="text-center text-white text-xl font-semibold mb-6 ">
+      Inscrivez-vous pour discuter avec vos amis
+    </p>
+    <form action="/" method="post" class="space-y-6">
+      <div>
+        <label for="pseudo" class="block text-sm font-medium text-white">Pseudo</label>
+        <input type="text" id="pseudo" name="pseudo" class="mt-2 block w-full px-4 py-3 bg-white bg-opacity-30 rounded-full border-none shadow-md focus:outline-none focus:ring-2 focus:ring-pink-400 focus:bg-opacity-50 transition-all duration-300">
+      </div>
+      <div>
+        <label for="email" class="block text-sm font-medium text-white">Email</label>
+        <input type="email" id="email" name="email" class="mt-2 block w-full px-4 py-3 bg-white bg-opacity-30 rounded-full border-none shadow-md focus:outline-none focus:ring-2 focus:ring-pink-400 focus:bg-opacity-50 transition-all duration-300">
+      </div>
+      <div>
+        <label for="password" class="block text-sm font-medium text-white">Mot de passe</label>
+        <input type="password" id="password" name="password" class="mt-2 block w-full px-4 py-3 bg-white bg-opacity-30 rounded-full border-none shadow-md focus:outline-none focus:ring-2 focus:ring-pink-400 focus:bg-opacity-50 transition-all duration-300">
+      </div>
+      <div>
+        <label for="confirmPassword" class="block text-sm font-medium text-white">Confirmez le mot de passe</label>
+        <input type="password" id="confirmPassword" name="confirmPassword" class="mt-2 block w-full px-4 py-3 bg-white bg-opacity-30 rounded-full border-none shadow-md focus:outline-none focus:ring-2 focus:ring-pink-400 focus:bg-opacity-50 transition-all duration-300">
+      </div>
+      <button type="submit" class="w-full bg-gradient-to-r bg-sky-600 text-white font-bold py-3 px-4 rounded-full shadow-lg hover:bg-gradient-to-r focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-offset-2 transition-all duration-300 ease-in-out transform hover:scale-105">
+        S'inscrire
+      </button>
+    </form>
+  </div>
 </div>
