@@ -1,0 +1,22 @@
+<h1>Bienvenue</h1>
+<div>
+    <button routerLink="/auth/login">Login</button>
+    <button routerLink="/auth/register">Register</button>
+</div>
+
+<div class="chat-container">
+    <div class="messages">
+      <div *ngFor="let message of messages">
+        <div>
+            {{ message.user }}
+        </div>
+        <div class="message">
+          {{ message.text }}
+        </div>
+      </div>
+    </div>
+    <div class="input-container">
+      <input type="text" [(ngModel)]="message" (keydown.enter)="sendMessage()">
+      <button (click)="sendMessage()">Send</button>
+    </div>
+  </div>
