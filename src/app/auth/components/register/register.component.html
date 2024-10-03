@@ -9,26 +9,24 @@
     <p class="text-center text-white text-xl font-semibold mb-6 ">
       Inscrivez-vous pour discuter avec vos amis
     </p>
-    <form action="/" method="post" class="space-y-6">
+    <form method="post" class="space-y-6">
       <div>
         <label for="pseudo" class="block text-sm font-medium text-white">Pseudo</label>
-        <input type="text" id="pseudo" name="pseudo" class="mt-2 block w-full px-4 py-3 bg-white bg-opacity-30 rounded-full border-none shadow-md focus:outline-none focus:ring-2 focus:ring-pink-400 focus:bg-opacity-50 transition-all duration-300">
+        <input [(ngModel)]="pseudo" type="text" id="pseudo" placeholder="Pseudo" [ngModelOptions]="{standalone: true}" class="mt-2 block w-full px-4 py-3 bg-white bg-opacity-30 rounded-full border-none shadow-md focus:outline-none focus:ring-2 focus:ring-pink-400 focus:bg-opacity-50 transition-all duration-300" />
       </div>
       <div>
         <label for="email" class="block text-sm font-medium text-white">Email</label>
-        <input type="email" id="email" name="email" class="mt-2 block w-full px-4 py-3 bg-white bg-opacity-30 rounded-full border-none shadow-md focus:outline-none focus:ring-2 focus:ring-pink-400 focus:bg-opacity-50 transition-all duration-300">
+        <input [(ngModel)]="email" type="email" id="email" placeholder="Email" [ngModelOptions]="{standalone: true}" class="mt-2 block w-full px-4 py-3 bg-white bg-opacity-30 rounded-full border-none shadow-md focus:outline-none focus:ring-2 focus:ring-pink-400 focus:bg-opacity-50 transition-all duration-300" />
       </div>
       <div>
         <label for="password" class="block text-sm font-medium text-white">Mot de passe</label>
-        <input type="password" id="password" name="password" class="mt-2 block w-full px-4 py-3 bg-white bg-opacity-30 rounded-full border-none shadow-md focus:outline-none focus:ring-2 focus:ring-pink-400 focus:bg-opacity-50 transition-all duration-300">
+        <input [(ngModel)]="password" type="password" id="password" placeholder="Password" [ngModelOptions]="{standalone: true}" class="mt-2 block w-full px-4 py-3 bg-white bg-opacity-30 rounded-full border-none shadow-md focus:outline-none focus:ring-2 focus:ring-pink-400 focus:bg-opacity-50 transition-all duration-300"/>
       </div>
       <div>
         <label for="confirmPassword" class="block text-sm font-medium text-white">Confirmez le mot de passe</label>
         <input type="password" id="confirmPassword" name="confirmPassword" class="mt-2 block w-full px-4 py-3 bg-white bg-opacity-30 rounded-full border-none shadow-md focus:outline-none focus:ring-2 focus:ring-pink-400 focus:bg-opacity-50 transition-all duration-300">
       </div>
-      <button type="submit" class="w-full bg-gradient-to-r bg-sky-600 text-white font-bold py-3 px-4 rounded-full shadow-lg hover:bg-gradient-to-r focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-offset-2 transition-all duration-300 ease-in-out transform hover:scale-105">
-        S'inscrire
-      </button>
+      <button class="w-full bg-gradient-to-r bg-sky-600 text-white font-bold py-3 px-4 rounded-full shadow-lg hover:bg-gradient-to-r focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-offset-2 transition-all duration-300 ease-in-out transform hover:scale-105" (click)="signUp()">S'inscrire</button>
     </form>
   </div>
 </div>

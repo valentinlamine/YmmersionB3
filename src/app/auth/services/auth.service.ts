@@ -13,7 +13,7 @@ export class AuthService {
   }
 
   // Sign up with email and password
-  signUp(email: string, password: string) {
+  signUp(email: string, password: string, pseudo: string) {
     return this.afAuth.createUserWithEmailAndPassword(email, password);
   }
 

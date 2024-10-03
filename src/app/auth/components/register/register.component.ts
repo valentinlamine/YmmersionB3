@@ -9,11 +9,12 @@ import { AuthService } from '../../services/auth.service';
 export class RegisterComponent {
   protected email: string = '';
   protected password: string = '';
+  protected pseudo: string = '';
 
   constructor(private authService: AuthService){}
 
   signUp() {
-    this.authService.signUp(this.email, this.password)
+    this.authService.signUp(this.email, this.password, this.pseudo)
       .then(result => {
         console.log('User signed up:', result);
       })
