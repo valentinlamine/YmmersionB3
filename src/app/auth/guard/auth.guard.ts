@@ -8,7 +8,7 @@ export const AuthGuard = () => {
 
   if(!auth.IsAuthenticated()) {
     router.navigateByUrl('/auth/login')
-    console.log("gné: " + auth.IsAuthenticated())
+    console.log("Authenticated is " + auth.IsAuthenticated())
     return false
   }
   return true

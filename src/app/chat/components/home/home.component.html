@@ -1,8 +1,23 @@
 <h1>Bienvenue</h1>
 <div>
-    <button routerLink="/auth/login">Login</button>
-    <button routerLink="/auth/register">Register</button>
+  <button routerLink="/auth/login">Login</button>
+  <button routerLink="/auth/register">Register</button>
   <button (click)="signOut()">Log Out</button>
+
+  <!-- Boutons pour changer de groupe -->
+  <div>
+    <h3>Mes Groupes</h3>
+    <button *ngFor="let group of userGroups" (click)="changeGroup(group.name)">
+      {{ group.name }}
+    </button>
+  </div>
+
+  <div class="input-container">
+    <input type="text" [(ngModel)]="name">
+    <input type="text" [(ngModel)]="toAdd" (keydown.enter)="addInGroup()">
+    <button (click)="addInGroup()">add in group</button>
+    <button (click)="addGroup()">add group</button>
+  </div>
 </div>
 
 <div class="chat-container">

@@ -12,8 +12,12 @@ import {Router} from "@angular/router";
 export class HomeComponent implements OnInit {
   user: any;
   pseudo: string = '';
+  group: string = '';
+  name: string = '';
+  toAdd: string = '';
   message: string = '';
   messages: any[] = [];
+  userGroups: any[] = [];
   selectedFile: File | null = null;
 
   constructor(
@@ -33,12 +37,32 @@ export class HomeComponent implements OnInit {
           if (userData) {
             this.pseudo = userData.pseudo;
             console.log("Pseudo: ", this.pseudo);
+
+            // Récupérer les groupes auxquels l'utilisateur appartient
+            this.chatService.getUserGroups(this.pseudo).subscribe(groups => {
+              this.userGroups = groups;
+              console.log("User groups: ", this.userGroups + "groups with user : ", groups);
+            });
           }
         });
       }
     });
 
-    this.chatService.getMessages().subscribe(messages => {
+    // Charger les messages du groupe par défaut
+    if (this.group) {
+      this.chatService.getMessages(this.group).subscribe(messages => {
+        this.messages = messages;
+        console.log(this.messages);
+      });
+    }
+  }
+
+  changeGroup(groupName: string) {
+    this.group = groupName;
+    console.log(`Group changed to: ${this.group}`);
+
+    // Recharger les messages du nouveau groupe
+    this.chatService.getMessages(this.group).subscribe(messages => {
       this.messages = messages;
       console.log(this.messages);
     });
@@ -61,7 +85,7 @@ export class HomeComponent implements OnInit {
     if (this.selectedFile) {
       this.chatService.uploadFile(this.selectedFile).subscribe(url => {
         console.log('File URL:', url); // Log the file URL to verify
-        this.chatService.sendMessage(this.message, this.pseudo, url).then(() => {
+        this.chatService.sendMessage(this.message, this.pseudo, this.group, url).then(() => {
           console.log('Message sent with file');
           this.message = '';
           this.selectedFile = null;
@@ -72,7 +96,7 @@ export class HomeComponent implements OnInit {
         console.error('File upload error:', error);
       });
     } else {
-      this.chatService.sendMessage(this.message, this.pseudo).then(() => {
+      this.chatService.sendMessage(this.message, this.pseudo, this.group).then(() => {
         console.log('Message sent without file');
         this.message = '';
       }).catch(error => {
@@ -99,10 +123,31 @@ export class HomeComponent implements OnInit {
     return isAudio;
   }
 
+  loadMessages() {
+    this.chatService.loadMessages();
+  }
+
+  removeGroup() {
+    this.chatService.removeGroup();
+  }
+
+  addGroup(){
+    this.chatService.addGroup(this.name, this.pseudo)
+  }
+
+  addInGroup() {
+    this.chatService.addInGroup(this.toAdd, this.name, this.pseudo);
+  }
+
+  removeInGroup() {
+    this.chatService.removeInGroup();
+  }
+
   signOut() {
     this.afAuth.signOut().then(result => {
       console.log('User signed out:', result);
       this.router.navigateByUrl('/auth/login')
     })
   }
+
 }
