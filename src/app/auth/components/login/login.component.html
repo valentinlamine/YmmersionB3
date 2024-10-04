@@ -4,38 +4,60 @@
   <div class="absolute inset-0 bg-black bg-opacity-40"></div>
 
   <!-- Formulaire de login avec effet de transparence et flou -->
-  <div class="relative max-w-md w-full p-8 bg-white bg-opacity-20 backdrop-blur-lg rounded-3xl shadow-2xl transition-transform transform duration-500">
+  <div id="div_form" class="relative max-w-md w-full p-8 bg-white bg-opacity-20 backdrop-blur-lg rounded-3xl shadow-2xl transition-transform transform duration-500">
 
-    <h2 class="text-center text-white text-2xl font-semibold mb-6">Connectez-vous</h2>
+    <h2 id="form-title" class="text-center text-white text-2xl font-semibold mb-6">Connectez-vous</h2>
 
-    <form method="post" class="space-y-6">
+    <form id="login-form" method="post" class="space-y-6">
       <div>
         <label for="email" class="block text-sm font-medium text-white">Email</label>
         <input [(ngModel)]="email" [ngModelOptions]="{standalone: true}" type="email" id="email" placeholder="Email" class="mt-2 block w-full px-4 py-3 bg-white bg-opacity-30 rounded-full border-none shadow-md focus:outline-none focus:ring-2 focus:ring-pink-400 focus:bg-opacity-50 transition-all duration-300"/>
       </div>
-      <div>
+      <div id="password-field">
         <label for="password" class="block text-sm font-medium text-white">Mot de passe</label>
         <input [(ngModel)]="password" [ngModelOptions]="{standalone: true}" type="password" id="password" placeholder="Password" class="mt-2 block w-full px-4 py-3 bg-white bg-opacity-30 rounded-full border-none shadow-md focus:outline-none focus:ring-2 focus:ring-pink-400 focus:bg-opacity-50 transition-all duration-300"/>
       </div>
 
-
-
       <!-- Bouton de connexion classique -->
-      <button class="w-full bg-gradient-to-r bg-sky-600 text-white font-bold py-3 px-4 rounded-full shadow-lg hover:bg-gradient-to-r focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-offset-2 transition-all duration-300 ease-in-out transform hover:scale-105" (click)="signIn()">Se connecter</button>
+      <button id="login-btn" class="w-full bg-gradient-to-r bg-sky-600 text-white font-bold py-3 px-4 rounded-full shadow-lg hover:bg-gradient-to-r focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-offset-2 transition-all duration-300 ease-in-out transform hover:scale-105" (click)="signIn()">Se connecter</button>
 
       <!-- Bouton de connexion via Google -->
       <div class="text-center mt-6">
         <button class="w-full bg-white text-black font-bold py-3 px-4 rounded-full shadow-lg flex items-center justify-center hover:bg-gray-200 transition-all duration-300 ease-in-out transform hover:scale-105" (click)="signInWithGoogle()">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/4/4a/Logo_2013_Google.png" alt="Google Logo" class="w-6 h-6 mr-3"/>
+          <img src="https://upload.wikimedia.org/wikipedia/commons/4/4a/Logo_2013_Google.png" alt="Google Logo" class="h-7 mr-3"/>
           Se connecter avec Google
         </button>
       </div>
 
-      <!-- Option mot de passe oublié -->
-      <div class="text-center">
-        <a href="#" class="text-sm  text-pink-400 hover:text-pink-300 transition duration-300">Mot de passe oublié ?</a>
+      <!-- Option utilisateur -->
+      <div class="flex justify-around">
+        <a id="forgot-password-link" class="text-sm text-white hover:text-pink-300 transition duration-300 cursor-pointer" (click)="sendPasswordResetEmail()">Mot de passe oublié ?</a>
+        <a href="../auth/register" class="text-sm text-white hover:text-pink-300 transition duration-300">Vous n'avez pas de compte ?</a>
       </div>
-
     </form>
+  </div>
+</div>
+
+<!-- Modal for missing email -->
+<div *ngIf="showModal" class="fixed inset-0 flex items-center justify-center z-50">
+  <div class="absolute inset-0 bg-black opacity-50"></div>
+  <div class="bg-white rounded-lg p-8 z-10 max-w-sm w-full">
+    <h2 class="text-xl text-center font-semibold mb-4">Adresse mail requise</h2>
+    <p class="mb-6">Veuillez renseigner l'adresse mail de votre compte.</p>
+    <div class="text-center">
+      <button class="bg-blue-500 text-white px-4 py-2 rounded" (click)="closeModal()">OK</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal for success email sent -->
+<div *ngIf="showSuccessModal" class="fixed inset-0 flex items-center justify-center z-50">
+  <div class="absolute inset-0 bg-black opacity-50"></div>
+  <div class="bg-white rounded-lg p-8 z-10 max-w-sm w-full">
+    <h2 class="text-xl text-center font-semibold mb-4">Email envoyé</h2>
+    <p class="mb-6 text-center pt-0.5">Un lien de réinitialisation de mot de passe a été envoyé à l'adresse email suivante: {{ email }}</p>
+    <div class="text-center">
+      <button class="bg-blue-500 text-white px-4 py-2 rounded" (click)="closeSuccessModal()">OK</button>
+    </div>
   </div>
 </div>

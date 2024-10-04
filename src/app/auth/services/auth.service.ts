@@ -19,6 +19,10 @@ export class AuthService {
     }));
   }
 
+  sendPasswordResetEmail(email: string) {
+    return this.afAuth.sendPasswordResetEmail(email);
+  }
+
   // Sign up with email and password
   signUp(email: string, password: string, pseudo: string) {
     return this.afAuth.createUserWithEmailAndPassword(email, password).then((userCredential) => {

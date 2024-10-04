@@ -10,6 +10,8 @@ import { Router } from '@angular/router';
 export class LoginComponent {
   protected email: string = '';
   protected password: string = '';
+  showModal: boolean = false;
+  showSuccessModal: boolean = false;
 
   constructor(private authService: AuthService, private router: Router) {}
 
@@ -33,5 +35,29 @@ export class LoginComponent {
       .catch(error => {
         console.error('Google sign in error:', error);
       });
+  }
+
+  sendPasswordResetEmail() {
+    if (!this.email) {
+      this.showModal = true;
+      return;
+    }
+
+    this.authService.sendPasswordResetEmail(this.email)
+      .then(() => {
+        console.log('Password reset email sent');
+        this.showSuccessModal = true;
+      })
+      .catch(error => {
+        console.error('Password reset error:', error);
+      });
+  }
+
+  closeModal() {
+    this.showModal = false;
+  }
+
+  closeSuccessModal() {
+    this.showSuccessModal = false;
   }
 }

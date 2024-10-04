@@ -34,4 +34,6 @@ export class RegisterComponent {
         console.error('Google sign up error:', error);
       });
   }
+
+
 }
