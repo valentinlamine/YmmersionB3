@@ -14,6 +14,7 @@ export class HomeComponent implements OnInit {
   pseudo: string = '';
   message: string = '';
   messages: any[] = [];
+  selectedFile: File | null = null;
 
   constructor(
     private afAuth: AngularFireAuth,
@@ -43,9 +44,59 @@ export class HomeComponent implements OnInit {
     });
   }
 
+  onFileSelected(event: any) {
+    this.selectedFile = event.target.files[0];
+  }
+
   sendMessage() {
-    this.chatService.sendMessage(this.message, this.pseudo);
-    this.message = '';
+    console.log('sendMessage called');
+    console.log('Message:', this.message);
+    console.log('Selected File:', this.selectedFile);
+
+    if (!this.message.trim() && !this.selectedFile) {
+      console.warn('Message and file are both empty. Nothing to send.');
+      return;
+    }
+
+    if (this.selectedFile) {
+      this.chatService.uploadFile(this.selectedFile).subscribe(url => {
+        console.log('File URL:', url); // Log the file URL to verify
+        this.chatService.sendMessage(this.message, this.pseudo, url).then(() => {
+          console.log('Message sent with file');
+          this.message = '';
+          this.selectedFile = null;
+        }).catch(error => {
+          console.error('Error sending message:', error);
+        });
+      }, error => {
+        console.error('File upload error:', error);
+      });
+    } else {
+      this.chatService.sendMessage(this.message, this.pseudo).then(() => {
+        console.log('Message sent without file');
+        this.message = '';
+      }).catch(error => {
+        console.error('Error sending message:', error);
+      });
+    }
+  }
+
+  isImageFile(fileUrl: string): boolean {
+    const isImage = /\.(jpeg|jpg|gif|png)(\?.*)?$/i.test(fileUrl);
+    console.log(`isImageFile: ${fileUrl} -> ${isImage}`);
+    return isImage;
+  }
+
+  isVideoFile(fileUrl: string): boolean {
+    const isVideo = /\.(mp4|webm|ogg)(\?.*)?$/i.test(fileUrl);
+    console.log(`isVideoFile: ${fileUrl} -> ${isVideo}`);
+    return isVideo;
+  }
+
+  isAudioFile(fileUrl: string): boolean {
+    const isAudio = /\.(mp3|wav|ogg)(\?.*)?$/i.test(fileUrl);
+    console.log(`isAudioFile: ${fileUrl} -> ${isAudio}`);
+    return isAudio;
   }
 
   signOut() {

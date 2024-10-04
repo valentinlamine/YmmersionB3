@@ -6,18 +6,33 @@
 </div>
 
 <div class="chat-container">
-    <div class="messages">
-      <div *ngFor="let message of messages">
-        <div>
-            {{ message.user }}
-        </div>
-        <div class="message">
-          {{ message.text }}
-        </div>
+  <div class="messages">
+    <div *ngFor="let message of messages">
+      <div>{{ message.user }}</div>
+      <div class="message">{{ message.text }}</div>
+      <div *ngIf="message.fileUrl">
+        <ng-container *ngIf="isImageFile(message.fileUrl); else mediaFile">
+          <img [src]="message.fileUrl" alt="Image" style="max-width: 100%; height: auto;">
+        </ng-container>
+        <ng-template #mediaFile>
+          <ng-container *ngIf="isVideoFile(message.fileUrl); else audioFile">
+            <video [src]="message.fileUrl" controls style="max-width: 100%; height: auto;"></video>
+          </ng-container>
+          <ng-template #audioFile>
+            <ng-container *ngIf="isAudioFile(message.fileUrl); else fileLink">
+              <audio [src]="message.fileUrl" controls style="max-width: 100%; height: auto;"></audio>
+            </ng-container>
+            <ng-template #fileLink>
+              <a [href]="message.fileUrl" target="_blank">View File</a>
+            </ng-template>
+          </ng-template>
+        </ng-template>
       </div>
     </div>
-    <div class="input-container">
-      <input type="text" [(ngModel)]="message" (keydown.enter)="sendMessage()">
-      <button (click)="sendMessage()">Send</button>
-    </div>
   </div>
+  <div class="input-container">
+    <input type="text" [(ngModel)]="message" (keydown.enter)="sendMessage()">
+    <input type="file" (change)="onFileSelected($event)">
+    <button (click)="sendMessage()">Send</button>
+  </div>
+</div>
