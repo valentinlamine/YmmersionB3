@@ -1,41 +1,48 @@
-<h1>Bienvenue</h1>
-<div>
-  <button routerLink="/auth/login">Login</button>
-  <button routerLink="/auth/register">Register</button>
-  <button (click)="signOut()">Log Out</button>
+<div class="flex flex-col items-center justify-around w-1/6 h-full">
 
-  <!-- Boutons pour changer de groupe -->
-  <div>
-    <h3>Mes Groupes</h3>
-    <button *ngFor="let group of userGroups" (click)="changeGroup(group.name)">
-      {{ group.name }}
+  <!-- Carré bleu au-dessus des barres -->
+  <div class="w-full h-1/5 flex flex-col items-center justify-evenly space-y-2">
+    <!-- Bouton "Créer un groupe" -->
+    <button class="block w-3/4 text-center py-2 px-3 border border-blue-700 text-blue-700 rounded-lg hover:bg-blue-700 hover:text-white transition duration-300 ease-in-out shadow-md">
+      Créer un groupe
+    </button>
+
+    <!-- Bouton "Trouver un utilisateur" -->
+    <button class="block w-3/4 text-center py-2 px-3 border border-blue-700 text-blue-700 rounded-lg hover:bg-blue-700 hover:text-white transition duration-300 ease-in-out shadow-md">
+      Trouver un utilisateur
     </button>
   </div>
 
-  <div class="input-container">
-    <input type="text" [(ngModel)]="name">
-    <input type="text" [(ngModel)]="toAdd" (keydown.enter)="addInGroup()">
-    <button (click)="addInGroup()">add in group</button>
-    <button (click)="addGroup()">add group</button>
+  <div class="flex w-full justify-between h-4/5">
+    <!-- Barre latérale noire -->
+    <div class="w-1/4 h-full bg-gray-700"></div>
+
+    <!-- Barre jaune -->
+    <div class="w-3/4 h-full bg-yellow-400"></div>
   </div>
 </div>
 
-<div class="chat-container">
-  <div class="messages">
-    <div *ngFor="let message of messages">
+<!-- Contenu principal -->
+<div class="w-5/6 h-full bg-amber-900">
+
+  <!-- Conteneur de chat -->
+  <div class="mt-12 mb-16 p-4 bg-white h-[calc(100vh-200px)] overflow-y-auto" id="chat-container">
+  <!-- Messages du chat -->
+  <div class="messages flex flex-col">
+    <div *ngFor="let message of messages" [ngClass]="{'my-message': message.user === pseudo, 'other-message': message.user !== pseudo}">
       <div>{{ message.user }}</div>
       <div class="message">{{ message.text }}</div>
       <div *ngIf="message.fileUrl">
         <ng-container *ngIf="isImageFile(message.fileUrl); else mediaFile">
-          <img [src]="message.fileUrl" alt="Image" style="max-width: 100%; height: auto;">
+          <img [src]="message.fileUrl" alt="Image" class="max-w-full h-auto">
         </ng-container>
         <ng-template #mediaFile>
           <ng-container *ngIf="isVideoFile(message.fileUrl); else audioFile">
-            <video [src]="message.fileUrl" controls style="max-width: 100%; height: auto;"></video>
+            <video [src]="message.fileUrl" controls class="max-w-full h-auto"></video>
           </ng-container>
           <ng-template #audioFile>
             <ng-container *ngIf="isAudioFile(message.fileUrl); else fileLink">
-              <audio [src]="message.fileUrl" controls style="max-width: 100%; height: auto;"></audio>
+              <audio [src]="message.fileUrl" controls class="max-w-full h-auto"></audio>
             </ng-container>
             <ng-template #fileLink>
               <a [href]="message.fileUrl" target="_blank">View File</a>
@@ -45,9 +52,24 @@
       </div>
     </div>
   </div>
-  <div class="input-container">
-    <input type="text" [(ngModel)]="message" (keydown.enter)="sendMessage()">
-    <input type="file" (change)="onFileSelected($event)">
-    <button (click)="sendMessage()">Send</button>
+</div>
+  <div class="fixed bottom-0 right-0 w-5/6 bg-white p-4 flex items-center justify-between">
+    <!-- Zone d'entrée de texte -->
+    <input type="text" [(ngModel)]="message" (keydown.enter)="sendMessage()" placeholder="Écrivez un message..." class="w-full bg-gray-100 border border-gray-300 rounded-lg p-2 mr-4">
+
+    <!-- Options pour ajouter des fichiers et envoyer un message -->
+    <div class="flex items-center space-x-4">
+      <!-- Logo pour envoyer des images -->
+      <button class="bg-gray-200 hover:bg-gray-300 p-2 rounded-lg" (click)="fileInput.click()">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 000 2.828l1.414 1.414a2 2 0 002.828 0L20 12m0 0L15.172 7M20 12l-5.172-5.172m0 0L4 16m0 0l6.586 6.586a2 2 0 002.828 0L20 12" />
+        </svg>
+      </button>
+      <input type="file" class="hidden" (change)="onFileSelected($event)" #fileInput>
+
+      <!-- Bouton envoyer -->
+      <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg" (click)="sendMessage()">Envoyer</button>
+    </div>
   </div>
+
 </div>

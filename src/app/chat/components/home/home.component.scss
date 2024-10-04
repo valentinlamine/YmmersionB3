@@ -1,39 +1,14 @@
-.chat-container {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-  }
-  
-  .messages {
-    flex: 1;
-    overflow-y: scroll;
-    padding: 20px;
-  }
-  
-  .message {
-    margin-bottom: 20px;
-  }
-  
-  .input-container {
-    display: flex;
-    align-items: center;
-    padding: 20px;
-  }
-  
-  input[type="text"] {
-    flex: 1;
-    border: none;
-    border-bottom: 1px solid #ccc;
-    padding: 10px;
-    font-size: 16px;
-  }
-  
-  button {
-    margin-left: 20px;
-    padding: 10px;
-    font-size: 16px;
-    background: #0084ff;
-    color: white;
-    border: none;
-    cursor: pointer;
-  }
+:host {
+  display: flex;
+  justify-content: space-around;
+  height: 100vh;
+  width: 100vw;
+}
+
+.my-message {
+  @apply self-end text-right bg-blue-100 p-4 text-lg rounded-lg m-2 max-w-[45%] break-words;
+}
+
+.other-message {
+  @apply self-start text-left bg-gray-100 p-4 text-lg rounded-lg m-2 max-w-[45%] break-words;
+}
