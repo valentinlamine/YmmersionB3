@@ -18,7 +18,7 @@ export class RegisterComponent {
     this.authService.signUp(this.email, this.password, this.pseudo)
       .then(result => {
         console.log('User signed up:', result);
-        this.router.navigate(['../auth/login']);
+        this.router.navigate(['../']);
       })
       .catch(error => {
         console.error('Sign up error:', error);
@@ -28,7 +28,7 @@ export class RegisterComponent {
     this.authService.signUpWithGoogle()
       .then(result => {
         console.log('User signed up with Google:', result);
-        this.router.navigate(['../auth/login']);
+        this.router.navigate(['../']);
       })
       .catch(error => {
         console.error('Google sign up error:', error);

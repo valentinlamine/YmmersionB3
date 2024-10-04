@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFireDatabase } from '@angular/fire/compat/database';
 import { ChatService } from '../../services/chat.service';
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-home',
@@ -17,7 +18,8 @@ export class HomeComponent implements OnInit {
   constructor(
     private afAuth: AngularFireAuth,
     private chatService: ChatService,
-    private db: AngularFireDatabase
+    private db: AngularFireDatabase,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -44,5 +46,12 @@ export class HomeComponent implements OnInit {
   sendMessage() {
     this.chatService.sendMessage(this.message, this.pseudo);
     this.message = '';
+  }
+
+  signOut() {
+    this.afAuth.signOut().then(result => {
+      console.log('User signed out:', result);
+      this.router.navigateByUrl('/auth/login')
+    })
   }
 }

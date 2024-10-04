@@ -9,10 +9,14 @@ import 'firebase/compat/auth';
 })
 export class AuthService {
   constructor(private afAuth: AngularFireAuth, private db: AngularFireDatabase) {}
+  private isAuthenticated = false
 
   // Sign in with email and password
   signIn(email: string, password: string) {
-    return this.afAuth.signInWithEmailAndPassword(email, password);
+    return this.afAuth.signInWithEmailAndPassword(email, password).then((() => {
+      this.isAuthenticated = true;
+      console.log("isAuthenticated " +this.isAuthenticated)
+    }));
   }
 
   // Sign up with email and password
@@ -22,6 +26,7 @@ export class AuthService {
       if (!user) {
         throw new Error("L'utilisateur n'a pas pu être créé.");
       }
+      this.isAuthenticated = true;
       return this.db.object(`users/${user.uid}`).set({
         email: user.email,
         pseudo: pseudo
@@ -36,6 +41,7 @@ export class AuthService {
       if (!user) {
         throw new Error("L'utilisateur n'a pas pu être créé.");
       }
+      this.isAuthenticated = true;
       return this.db.object(`users/${user.uid}`).set({
         email: user.email,
         pseudo: user.displayName // Assuming the displayName is used as pseudo
@@ -50,6 +56,7 @@ export class AuthService {
       if (!user) {
         throw new Error("L'utilisateur n'a pas pu être créé.");
       }
+      this.isAuthenticated = true;
       const userRef = this.db.object(`users/${user.uid}`);
       userRef.valueChanges().subscribe((userData) => {
         if (!userData) {
@@ -64,11 +71,18 @@ export class AuthService {
 
   // Sign out
   signOut() {
-    return this.afAuth.signOut();
+    return this.afAuth.signOut().then(() => {
+      this.isAuthenticated = false;
+    });
   }
 
   // Get current user
   getUser() {
     return this.afAuth.authState;
   }
+
+  IsAuthenticated(): boolean {
+    return this.isAuthenticated;
+  }
+
 }
