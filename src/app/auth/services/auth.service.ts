@@ -45,7 +45,21 @@ export class AuthService {
 
   // Sign in with Google
   signInWithGoogle() {
-    return this.afAuth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
+    return this.afAuth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).then((result) => {
+      const user = result.user;
+      if (!user) {
+        throw new Error("L'utilisateur n'a pas pu être créé.");
+      }
+      const userRef = this.db.object(`users/${user.uid}`);
+      userRef.valueChanges().subscribe((userData) => {
+        if (!userData) {
+          userRef.set({
+            email: user.email,
+            pseudo: user.displayName // Assuming the displayName is used as pseudo
+          });
+        }
+      });
+    });
   }
 
   // Sign out
