@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
-import {Router} from "@angular/router";
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -11,7 +11,7 @@ export class LoginComponent {
   protected email: string = '';
   protected password: string = '';
 
-  constructor(private authService: AuthService, private router: Router){}
+  constructor(private authService: AuthService, private router: Router) {}
 
   signIn() {
     this.authService.signIn(this.email, this.password)
@@ -21,6 +21,17 @@ export class LoginComponent {
       })
       .catch(error => {
         console.error('Sign in error:', error);
+      });
+  }
+
+  signInWithGoogle() {
+    this.authService.signInWithGoogle()
+      .then(result => {
+        console.log('User signed in with Google:', result);
+        this.router.navigate(['../']);
+      })
+      .catch(error => {
+        console.error('Google sign in error:', error);
       });
   }
 }

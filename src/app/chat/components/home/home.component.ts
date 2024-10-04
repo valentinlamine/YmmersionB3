@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFireDatabase } from '@angular/fire/compat/database';
 import { ChatService } from '../../services/chat.service';
@@ -8,7 +8,7 @@ import { ChatService } from '../../services/chat.service';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
   user: any;
   pseudo: string = '';
   message: string = '';
@@ -29,7 +29,7 @@ export class HomeComponent {
         this.db.object(`users/${this.user}`).valueChanges().subscribe((userData: any) => {
           if (userData) {
             this.pseudo = userData.pseudo;
-            console.log("Pseudo : ", this.pseudo);
+            console.log("Pseudo: ", this.pseudo);
           }
         });
       }

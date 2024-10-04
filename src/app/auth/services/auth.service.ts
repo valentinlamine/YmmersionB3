@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
-import {AngularFireDatabase} from "@angular/fire/compat/database";
+import { AngularFireDatabase } from '@angular/fire/compat/database';
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth';
 
 @Injectable({
   providedIn: 'root'
@@ -16,18 +18,34 @@ export class AuthService {
   // Sign up with email and password
   signUp(email: string, password: string, pseudo: string) {
     return this.afAuth.createUserWithEmailAndPassword(email, password).then((userCredential) => {
-      // Récupérer l'UID de l'utilisateur
       const user = userCredential.user;
       if (!user) {
-        throw new Error("L'utilisateur n'a pas pu être créé."); // Lancer une erreur si user est null
+        throw new Error("L'utilisateur n'a pas pu être créé.");
       }
-
-      // Ajouter les informations de l'utilisateur dans la base de données
       return this.db.object(`users/${user.uid}`).set({
         email: user.email,
         pseudo: pseudo
       });
     });
+  }
+
+  // Sign up with Google
+  signUpWithGoogle() {
+    return this.afAuth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).then((result) => {
+      const user = result.user;
+      if (!user) {
+        throw new Error("L'utilisateur n'a pas pu être créé.");
+      }
+      return this.db.object(`users/${user.uid}`).set({
+        email: user.email,
+        pseudo: user.displayName // Assuming the displayName is used as pseudo
+      });
+    });
+  }
+
+  // Sign in with Google
+  signInWithGoogle() {
+    return this.afAuth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
   }
 
   // Sign out
@@ -39,5 +57,4 @@ export class AuthService {
   getUser() {
     return this.afAuth.authState;
   }
-
 }

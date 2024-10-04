@@ -24,4 +24,14 @@ export class RegisterComponent {
         console.error('Sign up error:', error);
       });
   }
+  signUpWithGoogle() {
+    this.authService.signUpWithGoogle()
+      .then(result => {
+        console.log('User signed up with Google:', result);
+        this.router.navigate(['../auth/login']);
+      })
+      .catch(error => {
+        console.error('Google sign up error:', error);
+      });
+  }
 }
