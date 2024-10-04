@@ -1,7 +1,41 @@
-<div>
-    <h2>Sign In</h2>
-    <input [(ngModel)]="email" type="email" placeholder="Email" />
-    <input [(ngModel)]="password" type="password" placeholder="Password" />
-    
-    <button (click)="signIn()">Sign In</button>
+<div class="login-container relative min-h-screen bg-cover bg-center flex flex-col justify-center items-center" style="background-image: url('https://static.vitrine.ynov.com/var/site/storage/images/3/0/8/5/75803-1-fre-FR/3dc5ca9aa11f-ynov-campus-aix-en-provence.jpg'); background-attachment: fixed;">
+
+  <!-- Overlay pour assombrir légèrement l'arrière-plan -->
+  <div class="absolute inset-0 bg-black bg-opacity-40"></div>
+
+  <!-- Formulaire de login avec effet de transparence et flou -->
+  <div class="relative max-w-md w-full p-8 bg-white bg-opacity-20 backdrop-blur-lg rounded-3xl shadow-2xl transition-transform transform duration-500">
+
+    <h2 class="text-center text-white text-2xl font-semibold mb-6">Connectez-vous</h2>
+
+    <form method="post" class="space-y-6">
+      <div>
+        <label for="email" class="block text-sm font-medium text-white">Email</label>
+        <input [(ngModel)]="email" type="email" id="email" placeholder="Email" class="mt-2 block w-full px-4 py-3 bg-white bg-opacity-30 rounded-full border-none shadow-md focus:outline-none focus:ring-2 focus:ring-pink-400 focus:bg-opacity-50 transition-all duration-300"/>
+      </div>
+      <div>
+        <label for="password" class="block text-sm font-medium text-white">Mot de passe</label>
+        <input [(ngModel)]="password" type="password" id="password" placeholder="Password" class="mt-2 block w-full px-4 py-3 bg-white bg-opacity-30 rounded-full border-none shadow-md focus:outline-none focus:ring-2 focus:ring-pink-400 focus:bg-opacity-50 transition-all duration-300"/>
+      </div>
+
+
+
+      <!-- Bouton de connexion classique -->
+      <button class="w-full bg-gradient-to-r bg-sky-600 text-white font-bold py-3 px-4 rounded-full shadow-lg hover:bg-gradient-to-r focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-offset-2 transition-all duration-300 ease-in-out transform hover:scale-105" (click)="signIn()">Se connecter</button>
+
+      <!-- Bouton de connexion via Google -->
+      <div class="text-center mt-6">
+        <button class="w-full bg-white text-black font-bold py-3 px-4 rounded-full shadow-lg flex items-center justify-center hover:bg-gray-200 transition-all duration-300 ease-in-out transform hover:scale-105">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/4/4a/Logo_2013_Google.png" alt="Google Logo" class="w-6 h-6 mr-3"/>
+          Se connecter avec Google
+        </button>
+      </div>
+
+      <!-- Option mot de passe oublié -->
+      <div class="text-center">
+        <a href="#" class="text-sm  text-pink-400 hover:text-pink-300 transition duration-300">Mot de passe oublié ?</a>
+      </div>
+
+    </form>
+  </div>
 </div>
