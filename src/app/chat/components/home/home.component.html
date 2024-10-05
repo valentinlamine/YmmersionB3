@@ -14,12 +14,15 @@
   </div>
 
   <div class="flex w-full justify-between h-4/5">
-    <!-- Barre latérale noire -->
-    <div class="w-full h-full bg-gray-700 "></div>
-    <div class="w-1/4 h-full bg-gray-700"></div>
 
-    <!-- Barre jaune -->
-    <div class="w-3/4 h-full bg-yellow-400"></div>
+    <!-- Barre latérale noire -->
+    <div class="w-full h-full bg-gray-700 flex flex-col">
+      <p class="text-center">Mes Groupes</p>
+      <button *ngFor="let group of userGroups" (click)="changeGroup(group.name)">
+        {{ group.name }}
+      </button>
+    </div>
+
   </div>
 </div>
 
