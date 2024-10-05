@@ -14,10 +14,13 @@ export class HomeComponent implements OnInit {
   pseudo: string = '';
   group: string = '';
   name: string = '';
+  toConv: string = '';
   toAdd: string = '';
+  toRemove: string = '';
   message: string = '';
   messages: any[] = [];
   userGroups: any[] = [];
+  userConv: any[] = [];
   selectedFile: File | null = null;
 
   constructor(
@@ -41,7 +44,12 @@ export class HomeComponent implements OnInit {
             // Récupérer les groupes auxquels l'utilisateur appartient
             this.chatService.getUserGroups(this.pseudo).subscribe(groups => {
               this.userGroups = groups;
-              console.log("User groups: ", this.userGroups + "groups with user : ", groups);
+              console.log("User groups: ", this.userGroups);
+            });
+
+            this.chatService.getUserConv(this.pseudo).subscribe(conv => {
+              this.userConv = conv;
+              console.log("User conversations: ", this.userConv);
             });
           }
         });
@@ -50,7 +58,7 @@ export class HomeComponent implements OnInit {
 
     // Charger les messages du groupe par défaut
     if (this.group) {
-      this.chatService.getMessages(this.group).subscribe(messages => {
+      this.chatService.getMessages(this.group, this.pseudo).subscribe(messages => {
         this.messages = messages;
         console.log(this.messages);
       });
@@ -62,7 +70,7 @@ export class HomeComponent implements OnInit {
     console.log(`Group changed to: ${this.group}`);
 
     // Recharger les messages du nouveau groupe
-    this.chatService.getMessages(this.group).subscribe(messages => {
+    this.chatService.getMessages(this.group, this.pseudo).subscribe(messages => {
       this.messages = messages;
       console.log(this.messages);
     });
@@ -123,12 +131,10 @@ export class HomeComponent implements OnInit {
     return isAudio;
   }
 
-  loadMessages() {
-    this.chatService.loadMessages();
-  }
-
   removeGroup() {
-    this.chatService.removeGroup();
+    this.chatService.removeGroup(this.group);
+    this.group = '';
+    this.messages = [];
   }
 
   addGroup(){
@@ -136,11 +142,15 @@ export class HomeComponent implements OnInit {
   }
 
   addInGroup() {
-    this.chatService.addInGroup(this.toAdd, this.name, this.pseudo);
+    this.chatService.addInGroup(this.toAdd, this.group, this.pseudo);
+  }
+
+  addConv() {
+    this.chatService.addConv(this.toConv, this.pseudo)
   }
 
   removeInGroup() {
-    this.chatService.removeInGroup();
+    this.chatService.removeInGroup(this.toRemove, this.group);
   }
 
   signOut() {
@@ -149,5 +159,4 @@ export class HomeComponent implements OnInit {
       this.router.navigateByUrl('/auth/login')
     })
   }
-
 }

@@ -74,52 +74,27 @@ export class ChatService {
     ).toPromise();
   }
 
-  getMessages(group: string) {
+  getMessages(group: string, pseudo: string): Observable<any[]> {
     // Récupérer le groupId basé sur le nom du groupe
     return this.getGroupByName(group).pipe(
       switchMap(groupData => {
         if (groupData) {
-          const groupId = groupData.key; // Récupère l'ID du groupe
-          // Filtre les messages avec le groupId correspondant
-          return this.db.list('/messages', ref => ref.orderByChild('groupId').equalTo(groupId)).valueChanges();
+          const { key, members } = groupData;
+
+          // Vérifier si l'utilisateur est dans la liste des membres
+          if (!members.includes(pseudo)) {
+            console.log(`L'utilisateur ${pseudo} n'est pas membre du groupe ${group}.`);
+            return of([]); // Renvoie un tableau vide si l'utilisateur n'est pas membre
+          }
+
+          // Filtrer les messages avec le groupId correspondant
+          return this.db.list('/messages', ref => ref.orderByChild('groupId').equalTo(key)).valueChanges();
         } else {
           console.log('Aucun groupe trouvé');
           return of([]); // Renvoie un tableau vide si le groupe n'est pas trouvé
         }
       })
     );
-  }
-
-  removeGroup() {
-
-  }
-
-  loadMessages() {
-
-  }
-
-  addGroup(name: string, pseudo: string) {
-    this.checkGroupExists(name).subscribe(exists => {
-      if (exists) {
-        console.log("groupe existe déjà");
-        return
-      }
-    });
-
-    this.checkPseudoExists(pseudo).subscribe(exists => {
-      if (!exists) {
-        console.log("pseudo introuvable");
-        return
-      }
-    });
-    const groupId = this.db.createPushId();
-    const groupData = {
-      name: name,
-      members: pseudo,
-      createdAt: Date.now()
-    };
-    console.log("création terminée");
-    return this.db.object(`groupes/${groupId}`).set(groupData);
   }
 
   getGroupByName(groupName: string): Observable<{ key: string, members: string[] }> {
@@ -147,12 +122,65 @@ export class ChatService {
       .snapshotChanges()
       .pipe(
         map(changes =>
-          // On parcourt tous les groupes et on filtre ceux où le pseudo est dans 'members'
+          // On parcourt tous les groupes et on filtre ceux où le pseudo est dans 'members' et le type est 'conv'
           changes
             .map(c => ({ key: c.key, ...(c.payload.val() as any) }))
-            .filter(group => group.members && group.members.includes(pseudo)) // On vérifie si 'pseudo' est dans la liste 'members'
+            .filter(group =>
+              group.members && group.members.includes(pseudo) && group.type === 'group' // Vérifie si 'pseudo' est dans la liste 'members' et que le type est 'group'
+            )
         )
       );
+  }
+
+  getUserConv(pseudo: string): Observable<any[]> {
+    return this.db.list('groupes')
+      .snapshotChanges()
+      .pipe(
+        map(changes =>
+          // On parcourt tous les groupes et on filtre ceux où le pseudo est dans 'members' et le type est 'conv'
+          changes
+            .map(c => ({ key: c.key, ...(c.payload.val() as any) }))
+            .filter(group =>
+              group.members && group.members.includes(pseudo) && group.type === 'conv' // Vérifie si 'pseudo' est dans la liste 'members' et que le type est 'conv'
+            )
+        )
+      );
+  }
+
+  getOtherParticipant(conversationName: string, pseudo: string): string | null {
+    // On sépare les noms en utilisant la virgule
+    const names = conversationName.split(', ').map(name => name.trim());
+
+    // On filtre pour obtenir le nom qui n'est pas le pseudo
+    const otherName = names.find(name => name !== pseudo);
+
+    // Si on a trouvé un autre nom, on le retourne, sinon on retourne null
+    return otherName || null;
+  }
+
+  addGroup(name: string, pseudo: string) {
+    this.checkGroupExists(name).subscribe(exists => {
+      if (exists) {
+        console.log("groupe existe déjà");
+        return
+      }
+    });
+
+    this.checkPseudoExists(pseudo).subscribe(exists => {
+      if (!exists) {
+        console.log("pseudo introuvable");
+        return
+      }
+    });
+    const groupId = this.db.createPushId();
+    const groupData = {
+      name: name,
+      members: pseudo,
+      type: "group",
+      createdAt: Date.now()
+    };
+    console.log("création terminée");
+    return this.db.object(`groupes/${groupId}`).set(groupData);
   }
 
   addInGroup(toAdd: string, name: string, pseudo: string) {
@@ -173,6 +201,36 @@ export class ChatService {
           } else {
             // Le groupe existe, on peut directement ajouter le pseudo
             this.addPseudoToGroup(toAdd, name);
+          }
+        });
+      }
+    });
+  }
+
+  addConv(toAdd: string, pseudo: string) {
+    // Vérifie si le pseudo existe avant de l'ajouter
+    this.checkPseudoExists(toAdd).subscribe(exists => {
+      if (!exists) {
+        console.log("pseudo introuvable");
+        return;
+      } else {
+        // Si le pseudo existe, on peut poursuivre l'ajout dans le groupe
+        this.checkGroupExists(toAdd + ", " + pseudo).subscribe(groupExists => {
+          if (!groupExists) {
+            const groupId = this.db.createPushId();
+            const groupData = {
+              name: toAdd + ", " + pseudo,
+              members: pseudo,
+              type: "conv",
+              createdAt: Date.now()
+            };
+            console.log("création terminée");
+            return this.db.object(`groupes/${groupId}`).set(groupData).then(() => {
+              this.addPseudoToGroup(toAdd, toAdd + ", " + pseudo);
+            });
+          } else {
+            console.log("groupe existe pas encore, tentative de création");
+            return
           }
         });
       }
@@ -215,8 +273,71 @@ export class ChatService {
       );
   }
 
-  removeInGroup() {
+  removeInGroup(toRemove: string, groupName: string) {
+    console.log("Remove in group ACTION ON : " + groupName);
+    return this.getGroupByName(groupName).pipe(
+      switchMap(groupData => {
+        if (groupData) {
+          const { key, members } = groupData;
 
+          // Vérifier si l'utilisateur à retirer existe dans la liste des membres
+          const index = members.indexOf(toRemove);
+          if (index !== -1) {
+            // Enlever l'utilisateur de la liste
+            members.splice(index, 1);
+            const updatedMembers = members.join(','); // Mise à jour des membres sous forme de chaîne séparée par des virgules
+
+            // Mettre à jour la base de données
+            return this.db.object(`groupes/${key}`).update({ members: updatedMembers })
+              .then(() => {
+                console.log(`${toRemove} a été enlevé du groupe ${groupName}.`);
+              })
+              .catch(error => {
+                console.error('Erreur lors de la mise à jour du groupe :', error);
+                throw error;
+              });
+          } else {
+            console.log(`${toRemove} n'est pas membre du groupe ${groupName}.`);
+            return of(null);
+          }
+        } else {
+          console.log(`Groupe ${groupName} introuvable.`);
+          return of(null);
+        }
+      }),
+      catchError(error => {
+        console.error('Erreur dans removeInGroup :', error);
+        return of(null);
+      })
+    ).toPromise();
+  }
+
+  // Supprimer un groupe de la base de données
+  removeGroup(groupName: string) {
+    return this.getGroupByName(groupName).pipe(
+      switchMap(groupData => {
+        if (groupData) {
+          const { key } = groupData;
+
+          // Supprimer le groupe de la base de données
+          return this.db.object(`groupes/${key}`).remove()
+            .then(() => {
+              console.log(`Groupe ${groupName} supprimé avec succès.`);
+            })
+            .catch(error => {
+              console.error('Erreur lors de la suppression du groupe :', error);
+              throw error;
+            });
+        } else {
+          console.log(`Groupe ${groupName} introuvable.`);
+          return of(null);
+        }
+      }),
+      catchError(error => {
+        console.error('Erreur dans removeGroup :', error);
+        return of(null);
+      })
+    ).toPromise();
   }
 
 }
