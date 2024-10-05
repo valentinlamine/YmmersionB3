@@ -89,4 +89,8 @@ export class AuthService {
     return this.isAuthenticated;
   }
 
+  Auticate(bool: boolean): void {
+    this.isAuthenticated = bool;
+  }
+
 }

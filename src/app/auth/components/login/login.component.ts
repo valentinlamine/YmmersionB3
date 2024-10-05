@@ -19,6 +19,7 @@ export class LoginComponent {
     this.authService.signIn(this.email, this.password)
       .then(result => {
         console.log('User signed in:', result);
+
         this.router.navigate(['../']);
       })
       .catch(error => {
