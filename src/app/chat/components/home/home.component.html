@@ -2,6 +2,7 @@
 
   <!-- Carré bleu au-dessus des barres -->
   <div class="w-full h-1/5 flex flex-col items-center justify-evenly space-y-2">
+
     <!-- Bouton "Créer un groupe" -->
     <button class="block w-3/4 text-center py-2 px-3 border border-blue-700 text-blue-700 rounded-lg hover:bg-blue-700 hover:text-white transition duration-300 ease-in-out shadow-md">
       Créer un groupe
@@ -27,36 +28,40 @@
 </div>
 
 <!-- Contenu principal -->
-<div class="w-5/6 h-full bg-amber-900">
+<div class="w-5/6 h-full flex flex-col items-center justify-between">
+  <div class="w-full h-[10%] bg-amber-900">
 
+  </div>
   <!-- Conteneur de chat -->
-  <div class="mt-12 p-4 bg-white h-full overflow-y-auto pb-80" id="chat-container">
+  <div class="p-4 bg-white w-full h-[90%] overflow-y-auto pb-80" id="chat-container">
     <!-- Messages du chat -->
     <div class="messages flex flex-col">
       <div *ngFor="let message of messages" [ngClass]="{'my-message': message.user === pseudo, 'other-message': message.user !== pseudo}">
         <div>{{ message.user }}</div>
         <div class="message">{{ message.text }}</div>
         <div *ngIf="message.fileUrl">
-          <ng-container *ngIf="isImageFile(message.fileUrl); else mediaFile">
-            <img [src]="message.fileUrl" alt="Image" class="max-w-full h-auto">
+        <ng-container *ngIf="isImageFile(message.fileUrl); else mediaFile">
+          <img [src]="message.fileUrl" alt="Image" class="max-w-full h-auto">
+        </ng-container>
+        <ng-template #mediaFile>
+          <ng-container *ngIf="isVideoFile(message.fileUrl); else audioFile">
+          <video [src]="message.fileUrl" alt="image of a sunrise" class="max-w-full h-auto" controls></video>
           </ng-container>
-          <ng-template #mediaFile>
-            <ng-container *ngIf="isVideoFile(message.fileUrl); else audioFile">
-              <video [src]="message.fileUrl" alt="image of a sunrise" class="max-w-full h-auto" controls></video>
+          <ng-template #audioFile>
+            <ng-container *ngIf="isAudioFile(message.fileUrl); else fileLink">
+              <audio [src]="message.fileUrl" controls class="max-w-full h-auto"></audio>
             </ng-container>
-            <ng-template #audioFile>
-              <ng-container *ngIf="isAudioFile(message.fileUrl); else fileLink">
-                <audio [src]="message.fileUrl" controls class="max-w-full h-auto"></audio>
-              </ng-container>
-              <ng-template #fileLink>
-                <a [href]="message.fileUrl" target="_blank">View File</a>
-              </ng-template>
+            <ng-template #fileLink>
+              <a [href]="message.fileUrl" target="_blank">View File</a>
             </ng-template>
           </ng-template>
-        </div>
+        </ng-template>
       </div>
     </div>
   </div>
+</div>
+
+
   <div class="fixed bottom-0 w-5/6 p-4 flex items-center justify-between">
     <!-- Zone d'entrée de texte -->
     <input type="text" [(ngModel)]="message" (keydown.enter)="sendMessage()" placeholder="Écrivez un message..." class="w-full bg-gray-100 border border-gray-300 rounded-lg p-2 mr-4" style="background-color: rgba(255, 255, 255, 0.8);">
@@ -75,4 +80,4 @@
     </div>
   </div>
 
-</div>
+
