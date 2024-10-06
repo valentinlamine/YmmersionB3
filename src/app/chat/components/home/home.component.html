@@ -69,7 +69,7 @@
     <!-- Right Section for Displaying Discussion -->
     <main class="flex-1 p-4 flex flex-col relative">
       <!-- Bande de couleur sous le header -->
-      <div class="h-[8%] rounded-2xl bg-[rgba(9,21,30,0.8)] flex items-center justify-between px-4">
+      <div class="h-[80px] rounded-2xl bg-[rgba(9,21,30,0.8)] flex items-center justify-between px-4">
         <!-- Icon and Text on the Left -->
         <div class="flex items-center text-white">
           <span class="h-8 w-8 bg-chats-icon mr-2"></span>
@@ -81,16 +81,20 @@
               (click)="toggleContainer()"></span>
       </div>
 
+
       <!-- Container for messages and input -->
       <div [ngClass]="{'w-[72%]': isContainerVisible, 'w-full': !isContainerVisible}" class="flex-grow p-4 rounded-lg overflow-y-auto">
         <!-- Messages Display Area -->
-        <div class="messages flex flex-col space-y-4">
-          <div *ngFor="let message of messages" [ngClass]="{'my-message': message.user === pseudo, 'other-message': message.user !== pseudo}">
-            <div class="font-semibold text-gray-800">{{ message.user }}</div>
-            <div class="font-semibold text-gray-800">
+        <div *ngFor="let message of messages" class="flex"
+             [ngClass]="{'justify-end': message.user === pseudo, 'justify-start': message.user !== pseudo}">
+          <div class="flex flex-col max-w-[30%]">
+            <div [ngClass]="{'text-right': message.user === pseudo, 'text-left': message.user !== pseudo}"
+                 class="font-semibold text-[#ecfefe]">{{ message.user }}</div>
+            <div [ngClass]="{'text-right': message.user === pseudo, 'text-left': message.user !== pseudo}"
+                 class="text-[#ecfefe]">
               {{ message.timestamp | date: 'medium' }}
             </div>
-            <div class="message p-2 rounded">
+            <div class="message p-2 rounded bg-[#3f4d54] text-white break-words">
               {{ message.text }}
             </div>
 
@@ -121,8 +125,7 @@
       <div [ngClass]="{'w-[72%]': isContainerVisible, 'w-full': !isContainerVisible}" class="mt-4 flex items-center bg-[rgba(9,21,30,0.8)] p-3 rounded-2xl">
         <input type="text" [(ngModel)]="message" (keydown.enter)="sendMessage()" placeholder="Envoyer un message..." class="flex-1 font-light bg-[#202c34] border-2 border-[#3f4d54] text-white px-4 py-2 rounded focus:outline-none placeholder:text-[#ecfefe]"/>
 
-        <!-- Icon for adding -->
-        <!-- Icon for adding -->
+
         <label class="h-8 w-8 ml-2 cursor-pointer">
           <input type="file" (change)="onFileSelected($event)" class="hidden">
           <span class="block h-full w-full bg-[url('src/assets/icons/Plus.svg')] bg-cover"></span>
@@ -135,9 +138,9 @@
         </span>
       </div>
 
-      <!-- Right Container with Rounded Corners and Padding, Reduced Height -->
+      <!-- Right Container with Rounded Corners and Padding, Minimum Height -->
       <div id="infoContainer" [ngClass]="{'hidden': !isContainerVisible}"
-           class="absolute right-0 bottom-0 w-[25%] h-[80vh] bg-[rgba(9,21,30,0.8)] p-4 rounded-[16px] mx-4 mb-4 transition-transform duration-300 transform"
+           class="absolute right-0 top-[15vh] w-[25%] min-h-screen bg-[rgba(9,21,30,0.8)] p-4 rounded-[16px] mx-4 mb-4 transition-transform duration-300 transform overflow-y-auto"
            [ngStyle]="{'transform': isContainerVisible ? 'translateX(0)' : 'translateX(100%)'}">
 
         <!-- Text and Icon for Group Members, Icon Aligned to the Right -->
@@ -160,4 +163,7 @@
     </main>
   </div>
 </div>
+
+
+
 
