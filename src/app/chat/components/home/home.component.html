@@ -33,6 +33,10 @@
           <span class="h-8 w-8 mr-2 bg-chats-icon"></span>
           <span (click)="changeGroup(group.name)">{{ group.name }}</span>
         </li>
+        <li *ngFor="let group of userConv" class="flex items-center text-white hover:text-pink-300 cursor-pointer">
+          <span class="h-8 w-8 mr-2 bg-chats-icon"></span>
+          <span (click)="changeGroup(group.name)">{{ group.name }}</span>
+        </li>
       </ul>
 
       <!-- Popup Menu -->
@@ -43,7 +47,7 @@
         </div>
 
         <label class="block my-2">Chercher un nom d'utilisateur</label>
-        <input type="text" [(ngModel)]="toAdd" (keydown.enter)="addConv()" placeholder="Nom d'utilisateur" class="w-full font-light bg-[#202c34] border-2 border-[#3f4d54] text-white px-4 py-2 rounded focus:outline-none placeholder:text-[#ecfefe] mb-4"/>
+        <input type="text" [(ngModel)]="toConv" (keydown.enter)="addConv()" placeholder="Nom d'utilisateur" class="w-full font-light bg-[#202c34] border-2 border-[#3f4d54] text-white px-4 py-2 rounded focus:outline-none placeholder:text-[#ecfefe] mb-4"/>
 
         <!-- Create Conversation Button -->
         <button (click)="addConv()" class="w-3/4 bg-[#1ed7be] text-[#09151e] font-bold py-2 px-2 rounded-full shadow-lg hover:bg-gradient-to-r focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-offset-2 transition-all duration-300 ease-in-out transform hover:scale-105">
