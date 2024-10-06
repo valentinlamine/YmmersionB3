@@ -3,6 +3,7 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFireDatabase } from '@angular/fire/compat/database';
 import { ChatService } from '../../services/chat.service';
 import {Router} from "@angular/router";
+import {Observable} from "rxjs";
 
 @Component({
   selector: 'app-home',
@@ -21,6 +22,7 @@ export class HomeComponent implements OnInit {
   messages: any[] = [];
   userGroups: any[] = [];
   userConv: any[] = [];
+  members: any[] = [];
   selectedFile: File | null = null;
 
   constructor(
@@ -69,6 +71,7 @@ export class HomeComponent implements OnInit {
     this.group = groupName;
     console.log(`Group changed to: ${this.group}`);
 
+    this.loadMembers();
     // Recharger les messages du nouveau groupe
     this.chatService.getMessages(this.group, this.pseudo).subscribe(messages => {
       this.messages = messages;
@@ -78,6 +81,17 @@ export class HomeComponent implements OnInit {
 
   onFileSelected(event: any) {
     this.selectedFile = event.target.files[0];
+  }
+
+  loadMembers() {
+    if (this.group) { // Assurez-vous qu'un groupe est sélectionné
+      this.chatService.getMembers(this.group).subscribe(members => {
+        this.members = members; // Mettre à jour la variable members
+        console.log("Members of group:", this.members);
+      }, error => {
+        console.error('Error loading members:', error);
+      });
+    }
   }
 
   sendMessage() {

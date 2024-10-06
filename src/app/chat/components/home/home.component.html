@@ -34,6 +34,7 @@
       </button>
     </div>
     {{group}}
+    {{members}}
 
     <!-- Input pour ajouter un utilisateur -->
     <input type="text" [(ngModel)]="toAdd" (keydown.enter)="addInGroup(); toAdd=''" placeholder="Ajouter un utilisateur" class="mt-4 w-full border border-gray-300 rounded-lg p-2 shadow-md focus:outline-none focus:ring focus:ring-blue-400">
