@@ -27,19 +27,11 @@
         <span class="h-8 w-8 bg-add-chat-icon cursor-pointer" (click)="togglePopup()"></span>
       </div>
 
-      <!-- Example discussions/groups -->
+      <!-- discussions/groups -->
       <ul class="space-y-4">
-        <li class="flex items-center text-white hover:text-pink-300 cursor-pointer">
+        <li *ngFor="let group of userGroups" class="flex items-center text-white hover:text-pink-300 cursor-pointer">
           <span class="h-8 w-8 mr-2 bg-chats-icon"></span>
-          <span>Nom du groupe 1</span>
-        </li>
-        <li class="flex items-center text-white hover:text-pink-300 cursor-pointer">
-          <span class="h-8 w-8 mr-2 bg-chats-icon"></span>
-          <span>Nom du groupe 2</span>
-        </li>
-        <li class="flex items-center text-white hover:text-pink-300 cursor-pointer">
-          <span class="h-8 w-8 mr-2 bg-chat-icon"></span>
-          <span>Nom de l'ami</span>
+          <span (click)="changeGroup(group.name)">{{ group.name }}</span>
         </li>
       </ul>
 
@@ -51,18 +43,18 @@
         </div>
 
         <label class="block my-2">Chercher un nom d'utilisateur</label>
-        <input type="text" placeholder="Nom d'utilisateur" class="w-full font-light bg-[#202c34] border-2 border-[#3f4d54] text-white px-4 py-2 rounded focus:outline-none placeholder:text-[#ecfefe] mb-4"/>
+        <input type="text" [(ngModel)]="toAdd" (keydown.enter)="addConv()" placeholder="Nom d'utilisateur" class="w-full font-light bg-[#202c34] border-2 border-[#3f4d54] text-white px-4 py-2 rounded focus:outline-none placeholder:text-[#ecfefe] mb-4"/>
 
         <!-- Create Conversation Button -->
-        <button class="w-3/4 bg-[#1ed7be] text-[#09151e] font-bold py-2 px-2 rounded-full shadow-lg hover:bg-gradient-to-r focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-offset-2 transition-all duration-300 ease-in-out transform hover:scale-105">
+        <button (click)="addConv()" class="w-3/4 bg-[#1ed7be] text-[#09151e] font-bold py-2 px-2 rounded-full shadow-lg hover:bg-gradient-to-r focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-offset-2 transition-all duration-300 ease-in-out transform hover:scale-105">
           Créer une conversation privée
         </button>
 
         <label class="block my-2">Choisir le nom de la conversation</label>
-        <input type="text" placeholder="Nom de la conversation" class="w-full font-light bg-[#202c34] border-2 border-[#3f4d54] text-white px-4 py-2 rounded focus:outline-none placeholder:text-[#ecfefe] mb-4"/>
+        <input type="text" [(ngModel)]="name" (keydown.enter)="addGroup()" placeholder="Nom de la conversation" class="w-full font-light bg-[#202c34] border-2 border-[#3f4d54] text-white px-4 py-2 rounded focus:outline-none placeholder:text-[#ecfefe] mb-4"/>
 
         <!-- Create Conversation Button -->
-        <button class="w-3/4 bg-[#1ed7be] text-[#09151e] font-bold py-2 px-2 rounded-full shadow-lg hover:bg-gradient-to-r focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-offset-2 transition-all duration-300 ease-in-out transform hover:scale-105">
+        <button (click)="addGroup()" class="w-3/4 bg-[#1ed7be] text-[#09151e] font-bold py-2 px-2 rounded-full shadow-lg hover:bg-gradient-to-r focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-offset-2 transition-all duration-300 ease-in-out transform hover:scale-105">
           Créer un groupe
         </button>
       </div>
@@ -88,23 +80,46 @@
       <!-- Container for messages and input -->
       <div [ngClass]="{'w-[72%]': isContainerVisible, 'w-full': !isContainerVisible}" class="flex-grow p-4 rounded-lg overflow-y-auto">
         <!-- Messages Display Area -->
-        <div class="space-y-4">
-          <div class="bg-gray-200 p-2 rounded">Message 1</div>
-          <div class="bg-gray-200 p-2 rounded">Message 2</div>
-          <div class="bg-gray-200 p-2 rounded">Message 3</div>
+        <div class="messages flex flex-col space-y-4">
+          <div *ngFor="let message of messages" [ngClass]="{'my-message': message.user === pseudo, 'other-message': message.user !== pseudo}">
+            <div class="font-semibold text-gray-800">{{ message.user }}</div>
+            <div class="message p-2 rounded">
+              {{ message.text }}
+            </div>
+
+            <!-- Vérification de l'URL du fichier -->
+            <div *ngIf="message.fileUrl">
+              <ng-container *ngIf="isImageFile(message.fileUrl); else mediaFile">
+                <img [src]="message.fileUrl" alt="Image" class="max-w-full h-auto rounded mt-2">
+              </ng-container>
+              <ng-template #mediaFile>
+                <ng-container *ngIf="isVideoFile(message.fileUrl); else audioFile">
+                  <video [src]="message.fileUrl" alt="Video" class="max-w-full h-auto rounded mt-2" controls></video>
+                </ng-container>
+                <ng-template #audioFile>
+                  <ng-container *ngIf="isAudioFile(message.fileUrl); else fileLink">
+                    <audio [src]="message.fileUrl" controls class="max-w-full h-auto rounded mt-2"></audio>
+                  </ng-container>
+                  <ng-template #fileLink>
+                    <a [href]="message.fileUrl" target="_blank" class="text-blue-500 underline mt-2">View File</a>
+                  </ng-template>
+                </ng-template>
+              </ng-template>
+            </div>
+          </div>
         </div>
       </div>
 
       <!-- Input for Sending Messages -->
       <div [ngClass]="{'w-[72%]': isContainerVisible, 'w-full': !isContainerVisible}" class="mt-4 flex items-center bg-[rgba(9,21,30,0.8)] p-3 rounded-2xl">
-        <input type="text" placeholder="Envoyer un message..." class="flex-1 font-light bg-[#202c34] border-2 border-[#3f4d54] text-white px-4 py-2 rounded focus:outline-none placeholder:text-[#ecfefe]"/>
+        <input type="text" [(ngModel)]="message" (keydown.enter)="sendMessage()" placeholder="Envoyer un message..." class="flex-1 font-light bg-[#202c34] border-2 border-[#3f4d54] text-white px-4 py-2 rounded focus:outline-none placeholder:text-[#ecfefe]"/>
 
         <!-- Icon for adding -->
-        <span class="h-8 w-8 ml-2 bg-plus-icon cursor-pointer"></span>
+        <input type="file" (change)="(onFileSelected($event))" class="h-8 w-8 ml-2 bg-plus-icon cursor-pointer">
 
         <!-- Icon for sending message with background color -->
         <span class="h-10 w-10 ml-2 bg-[#1ed7be] cursor-pointer flex items-center justify-center rounded">
-          <span class="bg-paper-place-tilt-icon h-8 w-8"></span>
+          <span (click)="sendMessage()" class="bg-paper-place-tilt-icon h-8 w-8"></span>
         </span>
       </div>
 
@@ -121,23 +136,13 @@
 
         <!-- List of Group Members in Column -->
         <div class="flex flex-col space-y-4">
-          <!-- Member 1 -->
-          <div class="flex flex-col justify-between text-white">
+          <div *ngFor="let member of members" class="flex flex-col justify-between text-white">
             <!-- User Icon and Name -->
             <div class="flex justify-between pb-2.5">
               <span class="h-8 w-8 bg-[url('src/assets/icons/user.svg')] bg-cover mr-2"></span>
-              <span>Nom de l'ami</span>
+              <span>{{ member }}</span> <!-- Affiche le nom du membre -->
               <span class="h-6 w-6 bg-[url('src/assets/icons/DotsThreeVertical.svg')] bg-cover cursor-pointer"></span>
             </div>
-            <!-- Dots Icon -->
-
-            <div class="flex justify-between">
-              <span class="h-8 w-8 bg-[url('src/assets/icons/user.svg')] bg-cover mr-2"></span>
-              <span>Nom de l'ami</span>
-              <span class="h-6 w-6 bg-[url('src/assets/icons/DotsThreeVertical.svg')] bg-cover cursor-pointer"></span>
-            </div>
-            <!-- Dots Icon -->
-
           </div>
         </div>
       </div>

@@ -125,6 +125,8 @@ export class HomeComponent implements OnInit {
         console.error('Error sending message:', error);
       });
     }
+    this.message = "";
+    this.selectedFile = null;
   }
 
   isImageFile(fileUrl: string): boolean {
