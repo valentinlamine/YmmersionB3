@@ -1,5 +1,4 @@
 <div class="min-h-screen bg-[url('src/assets/background/rectangle-2.png')] bg-cover bg-center flex flex-col">
-
   <!-- Header -->
   <header class="h-[8vh] bg-[rgba(9,21,30,0.8)] flex items-center justify-end px-4">
     <div class="flex items-center space-x-4">
@@ -176,8 +175,11 @@
       </div>
     </main>
   </div>
+  <div [ngClass]="{'hidden': !isError}" class="absolute w-[500px] h-[150px] bg-red-600 bottom-4 right-4">
+    <button (click)="toggleError()" class="bg-red-500 right-0">X</button>
+    <div>{{errorMessage}}</div>
+  </div>
 </div>
-<!-- l50 -->
 
 
 

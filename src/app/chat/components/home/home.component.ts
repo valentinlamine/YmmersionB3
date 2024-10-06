@@ -26,6 +26,7 @@ export class HomeComponent implements OnInit {
   userConv: any[] = [];
   members: any[] = [];
   selectedFile: File | null = null;
+  errorMessage: string = '';
 
   constructor(
     private afAuth: AngularFireAuth,
@@ -160,13 +161,20 @@ export class HomeComponent implements OnInit {
   }
 
   addInGroupList() {
-    if (this.memberListTmp === '')
+    if (this.memberListTmp === '') {
+      this.errorMessage = 'Le pseudo ne peut pas être vide';
+      this.showError();
       return;
+    }
     if (this.memberList.includes(this.memberListTmp)) {
+      this.errorMessage = 'Le pseudo est déjà dans la liste';
+      this.showError();
       return;
     }
     this.chatService.checkPseudoExists(this.memberListTmp).subscribe(exist => {
       if (!exist) {
+        this.errorMessage = 'Le pseudo n\'existe pas';
+        this.showError();
         return
       } else {
         this.memberList.push(this.memberListTmp);
@@ -252,5 +260,14 @@ export class HomeComponent implements OnInit {
     });
 
     return `${dateString} à ${timeString}`;
+  }
+
+  isError: boolean = false;
+  toggleError(): void {
+    this.isError = !this.isError;
+  }
+
+  showError() {
+    this.isError = true;
   }
 }
