@@ -17,6 +17,8 @@ export class HomeComponent implements OnInit {
   name: string = '';
   toConv: string = '';
   toAdd: string = '';
+  memberList: string[] = [];
+  memberListTmp: string = '';
   toRemove: string = '';
   message: string = '';
   messages: any[] = [];
@@ -157,8 +159,29 @@ export class HomeComponent implements OnInit {
     this.chatService.addGroup(this.name, this.pseudo)
   }
 
+  addInGroupList() {
+    if (this.memberListTmp === '')
+      return;
+    if (this.memberList.includes(this.memberListTmp)) {
+      return;
+    }
+    this.chatService.checkPseudoExists(this.memberListTmp).subscribe(exist => {
+      if (!exist) {
+        return
+      } else {
+        this.memberList.push(this.memberListTmp);
+        this.memberListTmp = '';
+      }
+    });
+  }
+
+  removeInGroupList(name: string) {
+    this.memberList = this.memberList.filter(item => item !== name);
+  }
+
   addInGroup() {
-    this.chatService.addInGroup(this.toAdd, this.group, this.pseudo);
+    console.log(this.memberList);
+    this.chatService.addInGroup(this.memberList, this.group, this.pseudo);
   }
 
   addConv() {
@@ -190,5 +213,10 @@ export class HomeComponent implements OnInit {
 
   getOtherParticipant(group: string) {
     return this.chatService.getOtherParticipant(group, this.pseudo);
+  }
+
+  isPopupAddInGroupVisible: boolean = false;
+  togglePopupAddInGroup(): void {
+    this.isPopupAddInGroupVisible = !this.isPopupAddInGroupVisible;
   }
 }

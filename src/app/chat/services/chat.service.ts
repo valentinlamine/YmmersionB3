@@ -207,18 +207,21 @@ export class ChatService {
     });
   }
 
-  addInGroup(toAdd: string, groupName: string, pseudo: string) {
-    this.checkPseudoExists(toAdd).pipe(take(1)).subscribe(exists => {
-      if (!exists) {
-        console.log("pseudo introuvable");
-        return;
-      }
-      this.checkGroupExists(groupName).pipe(take(1)).subscribe(groupExists => {
-        if (groupExists) {
-          this.addPseudoToGroup(toAdd, groupName);
+  addInGroup(memberList: string[], groupName: string, pseudo: string) {
+    memberList.forEach(member => {
+      this.checkPseudoExists(member).pipe(take(1)).subscribe(exists => {
+        if (!exists) {
+          console.log("pseudo introuvable");
+          return;
         }
+        this.checkGroupExists(groupName).pipe(take(1)).subscribe(groupExists => {
+          if (groupExists) {
+            this.addPseudoToGroup(member, groupName);
+          }
+        });
       });
     });
+
   }
 
   addConv(toAdd: string, pseudo: string) {

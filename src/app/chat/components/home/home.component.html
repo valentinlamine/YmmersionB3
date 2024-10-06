@@ -146,7 +146,21 @@
         <!-- Text and Icon for Group Members, Icon Aligned to the Right -->
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-white text-lg font-semibold">Membre de groupe</h2>
-          <span class="h-8 w-8 bg-[url('src/assets/icons/UserPlus.svg')] bg-cover"></span>
+          <span class="h-8 w-8 bg-[url('src/assets/icons/UserPlus.svg')] bg-cover" (click)="togglePopupAddInGroup()" ></span>
+        </div>
+        <div [ngClass]="{'hidden': !isPopupAddInGroupVisible}" class="absolute w-[90%] h-[35%] bg-white rounded-lg flex-col p-4">
+          <div class="w-full text-[18px] pb-5 ">Ajouter un membre</div>
+          <label class="w-full">Chercher un ou plusieurs noms d'utilisateur</label>
+          <div class="flex-row h-[20%] w-full">
+            <input [(ngModel)]="memberListTmp" (keydown.enter)="addInGroupList()" type="text" placeholder="Entrez le nom d'utilisateur d'un ami" class="w-5/6 h-full bg-red-600">
+            <button (click)="addInGroupList()" class="w-1/6 h-full bg-sky-500">Ajouter</button>
+          </div>
+          <ul class="flex-row" >
+          <li *ngFor="let name of memberList" class="flex-row w-fit" >
+            {{name}} <button (click)="removeInGroupList(name)" class="bg-red-500">X</button>
+          </li>
+          </ul>
+          <button (click)="addInGroup()" class="w-full border-2 border-black mt-4">Ajouter des amis</button>
         </div>
         <!-- List of Group Members in Column -->
         <div class="flex flex-col space-y-4">
@@ -163,7 +177,7 @@
     </main>
   </div>
 </div>
-
+<!-- l50 -->
 
 
 
