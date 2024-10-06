@@ -92,7 +92,7 @@
                  class="font-semibold text-[#ecfefe]">{{ message.user }}</div>
             <div [ngClass]="{'text-right': message.user === pseudo, 'text-left': message.user !== pseudo}"
                  class="text-[#ecfefe]">
-              {{ message.timestamp | date: 'medium' }}
+              {{ formatTimestamp(message.timestamp) }}
             </div>
             <div class="message p-2 rounded bg-[#3f4d54] text-white break-words">
               {{ message.text }}
