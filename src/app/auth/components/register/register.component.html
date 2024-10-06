@@ -1,42 +1,68 @@
 <!-- Conteneur avec image de fond et effet de flou -->
-<div class="relative min-h-screen bg-cover bg-center flex flex-col justify-center items-center" style="background-image: url('https://static.vitrine.ynov.com/var/site/storage/images/3/0/8/5/75803-1-fre-FR/3dc5ca9aa11f-ynov-campus-aix-en-provence.jpg'); background-attachment: fixed;">
-
-  <!-- Overlay pour assombrir légèrement l'arrière-plan -->
-  <div class="absolute inset-0 bg-black bg-opacity-40"></div>
+<div class="relative min-h-screen bg-cover bg-center flex flex-col justify-center items-center bg-[url('src/assets/background/rectangle.png')]">
 
   <!-- Formulaire avec effet de transparence et flou -->
-  <div class="relative max-w-lg w-full mt-10 p-8 bg-white bg-opacity-20 backdrop-blur-lg rounded-3xl shadow-2xl transition-transform transform duration-500">
-    <p class="text-center text-white text-xl font-semibold mb-6 ">
-      Inscrivez-vous pour discuter avec vos amis
-    </p>
-    <form method="post" class="space-y-6">
-      <div>
-        <label for="pseudo" class="block text-sm font-medium text-white">Pseudo</label>
-        <input [(ngModel)]="pseudo" type="text" id="pseudo" placeholder="Pseudo" [ngModelOptions]="{standalone: true}" class="mt-2 placeholder-gray-600 block w-full px-4 py-3 bg-white bg-opacity-30 rounded-full border-none shadow-md focus:outline-none focus:ring-2 focus:ring-pink-400 focus:bg-opacity-50 transition-all duration-300" />
-      </div>
-      <div>
-        <label for="email" class="block text-sm font-medium text-white">Email</label>
-        <input [(ngModel)]="email" type="email" id="email" placeholder="Email" [ngModelOptions]="{standalone: true}" class="mt-2 placeholder-gray-600 block w-full px-4 py-3 bg-white bg-opacity-30 rounded-full border-none shadow-md focus:outline-none focus:ring-2 focus:ring-pink-400 focus:bg-opacity-50 transition-all duration-300" />
-      </div>
-      <div>
-        <label for="password" class="block text-sm font-medium text-white">Mot de passe</label>
-        <input [(ngModel)]="password" type="password" id="password" placeholder="Password" [ngModelOptions]="{standalone: true}" class="mt-2 placeholder-gray-600 block w-full px-4 py-3 bg-white bg-opacity-30 rounded-full border-none shadow-md focus:outline-none focus:ring-2 focus:ring-pink-400 focus:bg-opacity-50 transition-all duration-300"/>
-      </div>
-      <div>
-        <label for="confirmPassword" class="block text-sm font-medium text-white">Confirmez le mot de passe</label>
-        <input type="password" id="confirmPassword" placeholder="Password" name="confirmPassword" class="mt-2 placeholder-gray-600 block w-full px-4 py-3 bg-white bg-opacity-30 rounded-full border-none shadow-md focus:outline-none focus:ring-2 focus:ring-pink-400 focus:bg-opacity-50 transition-all duration-300">
-      </div>
-      <button class="w-full bg-gradient-to-r bg-sky-600 text-white font-bold py-3 px-4 rounded-full shadow-lg hover:bg-gradient-to-r focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-offset-2 transition-all duration-300 ease-in-out transform hover:scale-105" (click)="signUp()">S'inscrire</button>
-      <!-- Bouton de connexion via Google -->
-      <div class="text-center mt-6">
-        <button class="w-full bg-white text-black font-bold py-3 px-4 rounded-full shadow-lg flex items-center justify-center hover:bg-gray-200 transition-all duration-300 ease-in-out transform hover:scale-105" (click)="signUpWithGoogle()">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/4/4a/Logo_2013_Google.png" alt="Google Logo" class="h-6 mr-3"/>
-          Se connecter avec Google
-        </button>
-      </div>
-      <div class="text-center">
-        <a href="../auth/login" class="text-sm w-max text-white hover:text-pink-300 transition duration-300">Vous avez déja un compte ?</a>
-      </div>
-    </form>
+  <div class="relative max-w-lg w-full mt-10 p-8 bg-[rgba(9,21,30,0.8)] backdrop-blur-lg rounded-3xl shadow-2xl transition-transform transform duration-500" style="max-width: 700px;">
+
+    <!-- Conteneur centré avec largeur max de 460px -->
+    <div class="w-full max-w-[460px] mx-auto">
+
+      <!-- Texte "Inscription" plus gros -->
+      <p class="text-center text-white text-4xl font-bold mb-2">
+        Inscription
+      </p>
+
+      <!-- Texte plus petit pour la description -->
+      <p class="text-center text-white font-light text-lg font-semibold mb-6 ">
+        Discutez avec vos amis, créez des groupes et plus encore !
+      </p>
+
+      <!-- Formulaire d'inscription -->
+      <form method="post" class="space-y-6">
+
+        <!-- Bouton de connexion via Google avec logo -->
+        <div class="text-center">
+          <button class="w-full bg-[#09151e] text-white font-bold py-3 px-4 rounded-full border-2 border-white shadow-lg flex items-center justify-center hover:bg-[#202c34] transition-all duration-300 ease-in-out transform hover:scale-105 relative" (click)="signUpWithGoogle()">
+            <!-- Logo Google décalé vers la gauche avec left-2 -->
+            <span class="bg-google-icon bg-no-repeat bg-contain h-8 w-8 absolute left-2"></span>
+            S'inscrire avec Google
+          </button>
+        </div>
+
+        <!-- Ligne de séparation avec le texte "ou" au milieu -->
+        <div class="flex items-center my-6">
+          <div class="flex-grow border-t-2 border-[#3f4d54]"></div>
+          <span class="mx-4 text-white font-medium">ou</span>
+          <div class="flex-grow border-t-2 border-[#3f4d54]"></div>
+        </div>
+
+        <div>
+          <label for="email" class="block text-sm font-medium text-white">E-mail</label>
+          <input [(ngModel)]="email" type="email" id="email" placeholder="exemple@ychat.com" [ngModelOptions]="{standalone: true}" class="text-[#ecfefe] mt-2 font-light placeholder-[#ecfefe] block w-full px-4 py-3 bg-[#202c34] border border-[#3f4d54] rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-pink-400 transition-all duration-300" />
+        </div>
+
+        <div>
+          <label for="pseudo" class="block text-sm font-medium text-white">Pseudo</label>
+          <input [(ngModel)]="pseudo" type="text" id="pseudo" placeholder="Votre pseudo" [ngModelOptions]="{standalone: true}" class="text-[#ecfefe] mt-2 font-light placeholder-[#ecfefe] block w-full px-4 py-3 bg-[#202c34] border border-[#3f4d54] rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-pink-400 transition-all duration-300" />
+        </div>
+
+        <div>
+          <label for="password" class="block text-sm font-medium text-white">Mot de passe</label>
+          <input [(ngModel)]="password" type="password" id="password" placeholder="Votre mot de passe" [ngModelOptions]="{standalone: true}" class="text-[#ecfefe] mt-2 font-light placeholder-[#ecfefe] block w-full px-4 py-3 bg-[#202c34] border border-[#3f4d54] rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-pink-400 transition-all duration-300"/>
+        </div>
+
+        <div>
+          <label for="confirmPassword" class="block text-sm font-medium text-white">Confirmez le mot de passe</label>
+          <input type="password" id="confirmPassword" placeholder="Votre mot de passe" name="confirmPassword" class="text-white mt-2 font-light placeholder-[#ecfefe] block w-full px-4 py-3 bg-[#202c34] border border-[#3f4d54] rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-pink-400 transition-all duration-300">
+        </div>
+
+        <!-- Bouton s'inscrire -->
+        <button class="w-full bg-[#1ed7be] text-[#09151e] font-bold py-3 px-4 rounded-full shadow-lg hover:bg-gradient-to-r focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-offset-2 transition-all duration-300 ease-in-out transform hover:scale-105" (click)="signUp()">S'inscrire</button>
+        <div class="text-center">
+          <a href="../auth/login" class="text-sm w-max text-white hover:text-pink-300 transition duration-300">Vous avez déjà un compte ?</a>
+        </div>
+
+      </form>
+    </div>
   </div>
 </div>

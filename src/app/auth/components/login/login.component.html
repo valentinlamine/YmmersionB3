@@ -1,63 +1,52 @@
-<div class="login-container relative min-h-screen bg-cover bg-center flex flex-col justify-center items-center" style="background-image: url('https://static.vitrine.ynov.com/var/site/storage/images/3/0/8/5/75803-1-fre-FR/3dc5ca9aa11f-ynov-campus-aix-en-provence.jpg'); background-attachment: fixed;">
-
-  <!-- Overlay pour assombrir légèrement l'arrière-plan -->
-  <div class="absolute inset-0 bg-black bg-opacity-40"></div>
+<div class="relative min-h-screen bg-cover bg-center flex flex-col justify-center items-center bg-[url('src/assets/background/rectangle.png')]">
 
   <!-- Formulaire de login avec effet de transparence et flou -->
-  <div id="div_form" class="relative max-w-md w-full p-8 bg-white bg-opacity-20 backdrop-blur-lg rounded-3xl shadow-2xl transition-transform transform duration-500">
+  <div id="div_form" class="relative max-w-[700px] w-full p-8 bg-[rgba(9,21,30,0.8)] backdrop-blur-lg rounded-3xl shadow-2xl transition-transform transform duration-500">
 
-    <h2 id="form-title" class="text-center text-white text-2xl font-semibold mb-6">Connectez-vous</h2>
-
-    <form id="login-form" method="post" class="space-y-6">
-      <div>
-        <label for="email" class="block text-sm font-medium text-white">Email</label>
-        <input [(ngModel)]="email" [ngModelOptions]="{standalone: true}" type="email" id="email" placeholder="Email" class="mt-2 placeholder-gray-600 block w-full px-4 py-3 bg-white bg-opacity-30 rounded-full border-none shadow-md focus:outline-none focus:ring-2 focus:ring-pink-400 focus:bg-opacity-50 transition-all duration-300"/>
-      </div>
-      <div id="password-field">
-        <label for="password" class="block text-sm font-medium text-white">Mot de passe</label>
-        <input [(ngModel)]="password" [ngModelOptions]="{standalone: true}" type="password" id="password" placeholder="Password" class="mt-2 placeholder-gray-600 block w-full px-4 py-3 bg-white bg-opacity-30 rounded-full border-none shadow-md focus:outline-none focus:ring-2 focus:ring-pink-400 focus:bg-opacity-50 transition-all duration-300"/>
-      </div>
-
-      <!-- Bouton de connexion classique -->
-      <button id="login-btn" class="w-full bg-gradient-to-r bg-sky-600 text-white font-bold py-3 px-4 rounded-full shadow-lg hover:bg-gradient-to-r focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-offset-2 transition-all duration-300 ease-in-out transform hover:scale-105" (click)="signIn()">Se connecter</button>
+    <!-- Conteneur centré avec largeur max de 400px -->
+    <div class="w-full max-w-[400px] mx-auto">
+      <h2 id="form-title" class="text-center text-white text-4xl font-bold mb-6">Connexion</h2>
+      <p class="text-center text-white font-light text-xl mb-6">Discutez avec vos amis, créez des groupes et plus encore !</p>
 
       <!-- Bouton de connexion via Google -->
-      <div class="text-center mt-6">
-        <button class="w-full bg-white text-black font-bold py-3 px-4 rounded-full shadow-lg flex items-center justify-center hover:bg-gray-200 transition-all duration-300 ease-in-out transform hover:scale-105" (click)="signInWithGoogle()">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/4/4a/Logo_2013_Google.png" alt="Google Logo" class="h-7 mr-3"/>
+      <div class="text-center mb-6">
+        <button class="w-full bg-[#09151e] text-white font-bold py-3 px-4 rounded-full border-2 border-white shadow-lg flex items-center justify-center hover:bg-[#202c34] transition-all duration-300 ease-in-out transform hover:scale-105" (click)="signInWithGoogle()">
+          <span class="bg-google-icon bg-no-repeat bg-contain h-8 w-8 absolute left-2"></span>
           Se connecter avec Google
         </button>
       </div>
 
-      <!-- Option utilisateur -->
-      <div class="flex justify-around">
-        <a id="forgot-password-link" class="text-sm text-white hover:text-pink-300 transition duration-300 cursor-pointer" (click)="sendPasswordResetEmail()">Mot de passe oublié ?</a>
-        <a href="../auth/register" class="text-sm text-white hover:text-pink-300 transition duration-300">Vous n'avez pas de compte ?</a>
+      <!-- Ligne de séparation avec le texte "ou" au milieu -->
+      <div class="flex items-center my-6">
+        <div class="flex-grow border-t-2 border-[#3f4d54]"></div>
+        <span class="mx-4 text-white font-medium">ou</span>
+        <div class="flex-grow border-t-2 border-[#3f4d54]"></div>
       </div>
-    </form>
-  </div>
-</div>
 
-<!-- Modal for missing email -->
-<div *ngIf="showModal" class="fixed inset-0 flex items-center justify-center z-50">
-  <div class="absolute inset-0 bg-black opacity-50"></div>
-  <div class="bg-white rounded-lg p-8 z-10 max-w-sm w-full">
-    <h2 class="text-xl text-center font-semibold mb-4">Adresse mail requise</h2>
-    <p class="mb-6">Veuillez renseigner l'adresse mail de votre compte.</p>
-    <div class="text-center">
-      <button class="bg-blue-500 text-white px-4 py-2 rounded" (click)="closeModal()">OK</button>
-    </div>
-  </div>
-</div>
+      <!-- Formulaire de connexion classique -->
+      <form id="login-form" method="post" class="space-y-6">
+        <div>
+          <label for="email" class="block text-sm font-medium text-white">E-mail</label>
+          <input [(ngModel)]="email" [ngModelOptions]="{standalone: true}" type="email" id="email" placeholder="exemple@ychat.com" class="mt-2 font-light placeholder-[#ecfefe] text-[#ecfefe] block w-full px-4 py-3 bg-[#202c34] border border-[#3f4d54] rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-pink-400 focus:bg-opacity-50 transition-all duration-300"/>
+        </div>
+        <div id="password-field">
+          <label for="password" class="block text-sm font-medium text-white">Mot de passe</label>
+          <input [(ngModel)]="password" [ngModelOptions]="{standalone: true}" type="password" id="password" placeholder="Votre mot de passe" class="mt-2 font-light placeholder-[#ecfefe] text-[#ecfefe] block w-full px-4 py-3 bg-[#202c34] border border-[#3f4d54] rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-pink-400 focus:bg-opacity-50 transition-all duration-300"/>
+        </div>
 
-<!-- Modal for success email sent -->
-<div *ngIf="showSuccessModal" class="fixed inset-0 flex items-center justify-center z-50">
-  <div class="absolute inset-0 bg-black opacity-50"></div>
-  <div class="bg-white rounded-lg p-8 z-10 max-w-sm w-full">
-    <h2 class="text-xl text-center font-semibold mb-4">Email envoyé</h2>
-    <p class="mb-6 text-center pt-0.5">Un lien de réinitialisation de mot de passe a été envoyé à l'adresse email suivante: {{ email }}</p>
-    <div class="text-center">
-      <button class="bg-blue-500 text-white px-4 py-2 rounded" (click)="closeSuccessModal()">OK</button>
+        <!-- Bouton de connexion classique -->
+        <button id="login-btn" class="w-full bg-[#1ed7be] text-[#09151e] font-bold py-3 px-4 rounded-full shadow-lg hover:bg-gradient-to-r focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-offset-2 transition-all duration-300 ease-in-out transform hover:scale-105" (click)="signIn()">Se connecter</button>
+
+        <!-- Option utilisateur -->
+        <div class="flex flex-col items-center my-4">
+          <a id="forgot-password-link" class="text-sm font-semibold text-white hover:text-pink-300 transition duration-300 cursor-pointer" (click)="sendPasswordResetEmail()">Mot de passe oublié ?</a>
+          <div class="flex-grow border-t-2 border-[#3f4d54] my-2 w-full max-w-xs"></div>
+          <span class="text-sm text-white">Vous n'avez pas de compte ?
+            <a href="../auth/register" class="hover:text-pink-300 font-semibold transition duration-300 underline">S'inscrire</a>
+          </span>
+        </div>
+
+      </form>
     </div>
   </div>
 </div>

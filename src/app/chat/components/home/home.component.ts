@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFireDatabase } from '@angular/fire/compat/database';
 import { ChatService } from '../../services/chat.service';
-import {Router} from "@angular/router";
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -150,4 +150,15 @@ export class HomeComponent implements OnInit {
     })
   }
 
+  // Variable pour contrôler la visibilité du conteneur de droite
+  isContainerVisible = false;
+  toggleContainer() {
+    this.isContainerVisible = !this.isContainerVisible;
+  }
+
+  // Variable pour contrôler la visibilité de la pop-up
+  isPopupVisible: boolean = false;
+  togglePopup(): void {
+    this.isPopupVisible = !this.isPopupVisible;
+  }
 }
