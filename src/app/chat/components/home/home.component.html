@@ -1,6 +1,6 @@
 <div class="min-h-screen bg-[url('src/assets/background/rectangle-2.png')] bg-cover bg-center flex flex-col">
   <!-- Header -->
-  <header class="h-[8vh] bg-[rgba(9,21,30,0.8)] flex items-center justify-end px-4">
+  <header class="h-[8vh] w-full bg-[rgba(9,21,30,0.9)] flex items-center justify-end px-4 fixed z-50">
     <div class="flex items-center space-x-4">
       <!-- User Icon and Text -->
       <a href="#" class="flex items-center text-white">
@@ -19,14 +19,16 @@
   <div class="flex flex-1">
 
     <!-- Left Sidebar for Discussions/Groups -->
-    <aside class="w-[15%] bg-[rgba(9,21,30,0.8)] p-4 rounded-[16px] mx-4 my-4 relative">
+    <aside class="w-[15%] p-4 rounded-[16px] mx-4 my-4 relative mt-[80px]"></aside>
+    <!-- Left Sidebar for Discussions/Groups -->
+    <aside class="w-[15%] h-[90%]  bg-[rgba(9,21,30,9)] p-4 rounded-[16px] mx-4 my-4 fixed mt-[80px]">
       <!-- Title and Add Chat Icon -->
       <div class="flex items-center justify-between mb-4">
         <h2 class="text-white text-lg font-semibold">Conversation</h2>
         <span class="h-8 w-8 bg-add-chat-icon cursor-pointer" (click)="togglePopup()"></span>
       </div>
 
-      <!-- discussions/groups -->
+      <!-- Discussions/Groups -->
       <ul class="space-y-4">
         <li *ngFor="let group of userGroups" class="flex items-center text-white hover:text-pink-300 cursor-pointer">
           <span class="h-8 w-8 mr-2 bg-chats-icon"></span>
@@ -65,10 +67,10 @@
 
     </aside>
 
-    <!-- Right Section for Displaying Discussion -->
+    <!-- Middle Section for Displaying Discussion -->
     <main class="flex-1 p-4 flex flex-col relative">
       <!-- Bande de couleur sous le header -->
-      <div class="h-[80px] rounded-2xl bg-[rgba(9,21,30,0.8)] flex items-center justify-between px-4">
+      <div class="h-[80px] w-[81%] rounded-2xl bg-[rgba(9,21,30,0.9)] flex items-center justify-between px-4 mt-[80px] fixed">
         <!-- Icon and Text on the Left -->
         <div class="flex items-center text-white">
           <span class="h-8 w-8 bg-chats-icon mr-2"></span>
@@ -80,9 +82,8 @@
               (click)="toggleContainer()"></span>
       </div>
 
-
       <!-- Container for messages and input -->
-      <div [ngClass]="{'w-[72%]': isContainerVisible, 'w-full': !isContainerVisible}" class="flex-grow p-4 rounded-lg overflow-y-auto">
+      <div [ngClass]="{'w-[72%]': isContainerVisible, 'w-full': !isContainerVisible}" class="flex-grow p-4 mt-[150px] rounded-lg overflow-y-auto"> <!-- Ajouter margin-top pour le positionner sous le bandeau -->
         <!-- Messages Display Area -->
         <div *ngFor="let message of messages" class="flex"
              [ngClass]="{'justify-end': message.user === pseudo, 'justify-start': message.user !== pseudo}">
@@ -121,29 +122,27 @@
       </div>
 
       <!-- Input for Sending Messages -->
-      <div [ngClass]="{'w-[72%]': isContainerVisible, 'w-full': !isContainerVisible}" class="mt-4 flex items-center bg-[rgba(9,21,30,0.8)] p-3 rounded-2xl">
+      <div [ngClass]="{'w-[72%]': isContainerVisible, 'w-full': !isContainerVisible}" class="mt-4 flex items-center bg-[rgba(9,21,30,0.9)] p-3 rounded-2xl">
         <input type="text" [(ngModel)]="message" (keydown.enter)="sendMessage()" placeholder="Envoyer un message..." class="flex-1 font-light bg-[#202c34] border-2 border-[#3f4d54] text-white px-4 py-2 rounded focus:outline-none placeholder:text-[#ecfefe]"/>
-
 
         <label class="h-8 w-8 ml-2 cursor-pointer">
           <input type="file" (change)="onFileSelected($event)" class="hidden">
           <span class="block h-full w-full bg-[url('src/assets/icons/Plus.svg')] bg-cover"></span>
         </label>
 
-
         <!-- Icon for sending message with background color -->
         <span class="h-10 w-10 ml-2 bg-[#1ed7be] cursor-pointer flex items-center justify-center rounded">
-          <span (click)="sendMessage()" class="bg-paper-place-tilt-icon h-8 w-8"></span>
-        </span>
+      <span (click)="sendMessage()" class="bg-paper-place-tilt-icon h-8 w-8"></span>
+    </span>
       </div>
 
       <!-- Right Container with Rounded Corners and Padding, Minimum Height -->
       <div id="infoContainer" [ngClass]="{'hidden': !isContainerVisible}"
-           class="absolute right-0 top-[15vh] w-[25%] min-h-screen bg-[rgba(9,21,30,0.8)] p-4 rounded-[16px] mx-4 mb-4 transition-transform duration-300 transform overflow-y-auto"
+           class="absolute right-0 h-[80%] w-[25%] bg-[rgba(9,21,30,0.9)] p-4 rounded-[16px] mx-4 mb-4 mt-44 transition-transform duration-300 transform overflow-y-auto"
            [ngStyle]="{'transform': isContainerVisible ? 'translateX(0)' : 'translateX(100%)'}">
 
         <!-- Text and Icon for Group Members, Icon Aligned to the Right -->
-        <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center justify-between mb-4 max-h-[90%]">
           <h2 class="text-white text-lg font-semibold">Membre de groupe</h2>
           <span class="h-8 w-8 bg-[url('src/assets/icons/UserPlus.svg')] bg-cover" (click)="togglePopupAddInGroup()" ></span>
         </div>
@@ -174,6 +173,7 @@
         </div>
       </div>
     </main>
+
   </div>
   <div [ngClass]="{'hidden': !isError}" class="absolute w-[500px] h-[150px] bg-red-600 bottom-4 right-4">
     <button (click)="toggleError()" class="bg-red-500 right-0">X</button>
