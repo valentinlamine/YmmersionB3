@@ -185,23 +185,26 @@ export class ChatService {
         console.log("groupe existe déjà");
         return
       }
-    });
-
-    this.checkPseudoExists(pseudo).subscribe(exists => {
-      if (!exists) {
-        console.log("pseudo introuvable");
-        return
+      else {
+        this.checkPseudoExists(pseudo).subscribe(exists => {
+          if (!exists) {
+            console.log("pseudo introuvable");
+            return
+          }
+          else {
+            const groupId = this.db.createPushId();
+            const groupData = {
+              name: name,
+              members: pseudo,
+              type: "group",
+              createdAt: Date.now()
+            };
+            console.log("création terminée");
+            return this.db.object(`groupes/${groupId}`).set(groupData);
+          }
+        });
       }
     });
-    const groupId = this.db.createPushId();
-    const groupData = {
-      name: name,
-      members: pseudo,
-      type: "group",
-      createdAt: Date.now()
-    };
-    console.log("création terminée");
-    return this.db.object(`groupes/${groupId}`).set(groupData);
   }
 
   addInGroup(toAdd: string, groupName: string, pseudo: string) {

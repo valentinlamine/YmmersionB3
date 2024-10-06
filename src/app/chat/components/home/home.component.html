@@ -35,7 +35,7 @@
         </li>
         <li *ngFor="let group of userConv" class="flex items-center text-white hover:text-pink-300 cursor-pointer">
           <span class="h-8 w-8 mr-2 bg-chats-icon"></span>
-          <span (click)="changeGroup(group.name)">{{ group.name }}</span>
+          <span (click)="changeGroup(group.name)">{{ getOtherParticipant(group.name) }}</span>
         </li>
       </ul>
 
@@ -87,6 +87,9 @@
         <div class="messages flex flex-col space-y-4">
           <div *ngFor="let message of messages" [ngClass]="{'my-message': message.user === pseudo, 'other-message': message.user !== pseudo}">
             <div class="font-semibold text-gray-800">{{ message.user }}</div>
+            <div class="font-semibold text-gray-800">
+              {{ message.timestamp | date: 'medium' }}
+            </div>
             <div class="message p-2 rounded">
               {{ message.text }}
             </div>
@@ -142,12 +145,6 @@
           <h2 class="text-white text-lg font-semibold">Membre de groupe</h2>
           <span class="h-8 w-8 bg-[url('src/assets/icons/UserPlus.svg')] bg-cover"></span>
         </div>
-      </div>
-    </main>
-  </div>
-</div>
-
-
         <!-- List of Group Members in Column -->
         <div class="flex flex-col space-y-4">
           <div *ngFor="let member of members" class="flex flex-col justify-between text-white">
@@ -159,4 +156,8 @@
             </div>
           </div>
         </div>
+      </div>
+    </main>
+  </div>
+</div>
 

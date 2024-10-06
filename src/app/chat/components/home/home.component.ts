@@ -187,4 +187,8 @@ export class HomeComponent implements OnInit {
   togglePopup(): void {
     this.isPopupVisible = !this.isPopupVisible;
   }
+
+  getOtherParticipant(group: string) {
+    return this.chatService.getOtherParticipant(group, this.pseudo);
+  }
 }
