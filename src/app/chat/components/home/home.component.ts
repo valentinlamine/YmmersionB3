@@ -173,4 +173,16 @@ export class HomeComponent implements OnInit {
       this.router.navigateByUrl('/auth/login')
     })
   }
+
+  // Variable pour contrôler la visibilité du conteneur de droite
+  isContainerVisible = false;
+  toggleContainer() {
+    this.isContainerVisible = !this.isContainerVisible;
+  }
+
+  // Variable pour contrôler la visibilité de la pop-up
+  isPopupVisible: boolean = false;
+  togglePopup(): void {
+    this.isPopupVisible = !this.isPopupVisible;
+  }
 }

@@ -1,114 +1,143 @@
-<div class="flex flex-col items-center justify-between w-1/6 h-full p-4 bg-gray-100">
-  <!-- Carré bleu au-dessus des barres -->
-  <div class="w-full flex flex-col items-center justify-around space-y-4">
-    <!-- Input pour le nom du groupe -->
-    <input type="text" [(ngModel)]="name" (keydown.enter)="addGroup(); name=''" placeholder="Nom du groupe" class="w-full border border-gray-300 rounded-lg p-2 shadow-md focus:outline-none focus:ring focus:ring-blue-400">
+<div class="min-h-screen bg-[url('src/assets/background/rectangle-2.png')] bg-cover bg-center flex flex-col">
 
-    <!-- Bouton "Créer un groupe" -->
-    <button (click)="addGroup(); name=''" class="w-full text-center py-2 border border-blue-700 text-blue-700 rounded-lg bg-white hover:bg-blue-700 hover:text-white transition duration-300 ease-in-out shadow-md">
-      Créer un groupe
-    </button>
+  <!-- Header -->
+  <header class="h-[8vh] bg-[rgba(9,21,30,0.8)] flex items-center justify-end px-4">
+    <div class="flex items-center space-x-4">
+      <!-- User Icon and Text -->
+      <a href="#" class="flex items-center text-white">
+        <span class="h-8 w-8 mr-1 bg-user-icon"></span>
+        <span>Compte</span>
+      </a>
 
-    <!-- Input pour trouver un utilisateur -->
-    <input type="text" [(ngModel)]="toConv" (keydown.enter)="addConv(); toAdd=''" placeholder="Trouver un utilisateur" class="w-full border border-gray-300 rounded-lg p-2 shadow-md focus:outline-none focus:ring focus:ring-blue-400">
-
-    <!-- Bouton "Trouver un utilisateur" -->
-    <button (click)="addConv(); toAdd=''" class="w-full text-center py-2 border border-blue-700 text-blue-700 rounded-lg bg-white hover:bg-blue-700 hover:text-white transition duration-300 ease-in-out shadow-md">
-      Trouver un utilisateur
-    </button>
-  </div>
-
-  <!-- Barre latérale pour les groupes et les conversations -->
-  <div class="w-3/4 h-full bg-gray-800 p-4 rounded-lg shadow-lg mt-4">
-    <h3 class="text-white text-lg font-semibold">Mes Groupes</h3>
-    <div class="flex flex-col space-y-2 mt-2">
-      <button *ngFor="let group of userGroups" (click)="changeGroup(group.name)" class="bg-blue-600 text-white rounded-lg py-2 hover:bg-blue-700 shadow-md transition duration-200">
-        {{ group.name }}
-      </button>
+      <!-- Sign Out Icon and Text -->
+      <a href="#" class="flex items-center text-white">
+        <span class="h-8 w-8 mr-1 bg-signout-icon"></span>
+        <span>Se déconnecter</span>
+      </a>
     </div>
+  </header>
 
-    <h3 class="text-white text-lg font-semibold mt-4">Mes Conv</h3>
-    <div class="flex flex-col space-y-2 mt-2">
-      <button *ngFor="let conv of userConv" (click)="changeGroup(conv.name)" class="bg-green-600 text-white rounded-lg py-2 hover:bg-green-700 shadow-md transition duration-200">
-        {{ conv.name }}
-      </button>
-    </div>
-    {{group}}
-    {{members}}
+  <div class="flex flex-1">
 
-    <!-- Input pour ajouter un utilisateur -->
-    <input type="text" [(ngModel)]="toAdd" (keydown.enter)="addInGroup(); toAdd=''" placeholder="Ajouter un utilisateur" class="mt-4 w-full border border-gray-300 rounded-lg p-2 shadow-md focus:outline-none focus:ring focus:ring-blue-400">
+    <!-- Left Sidebar for Discussions/Groups -->
+    <aside class="w-[15%] bg-[rgba(9,21,30,0.8)] p-4 rounded-[16px] mx-4 my-4 relative">
+      <!-- Title and Add Chat Icon -->
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-white text-lg font-semibold">Conversation</h2>
+        <span class="h-8 w-8 bg-add-chat-icon cursor-pointer" (click)="togglePopup()"></span>
+      </div>
 
-    <!-- Bouton "Ajouter un utilisateur" -->
-    <button (click)="addInGroup(); toAdd=''" class="mt-2 w-full text-center py-2 border border-blue-700 text-blue-700 rounded-lg bg-white hover:bg-blue-700 hover:text-white transition duration-300 ease-in-out shadow-md">
-      Ajouter un utilisateur
-    </button>
+      <!-- Example discussions/groups -->
+      <ul class="space-y-4">
+        <li class="flex items-center text-white hover:text-pink-300 cursor-pointer">
+          <span class="h-8 w-8 mr-2 bg-chats-icon"></span>
+          <span>Nom du groupe 1</span>
+        </li>
+        <li class="flex items-center text-white hover:text-pink-300 cursor-pointer">
+          <span class="h-8 w-8 mr-2 bg-chats-icon"></span>
+          <span>Nom du groupe 2</span>
+        </li>
+        <li class="flex items-center text-white hover:text-pink-300 cursor-pointer">
+          <span class="h-8 w-8 mr-2 bg-chat-icon"></span>
+          <span>Nom de l'ami</span>
+        </li>
+      </ul>
 
-    <!-- Input pour enlever un utilisateur -->
-    <input type="text" [(ngModel)]="toRemove" (keydown.enter)="removeInGroup(); toRemove=''" placeholder="Enlever un utilisateur" class="mt-4 w-full border border-gray-300 rounded-lg p-2 shadow-md focus:outline-none focus:ring focus:ring-blue-400">
+      <!-- Popup Menu -->
+      <div *ngIf="isPopupVisible" class="absolute left-[80%] top-[7%] w-[400px] bg-[rgba(9,21,30,1)] text-white rounded-lg p-4 shadow-lg z-50">
+        <!-- Popup Content -->
+        <div class="mb-4">
+          <h3 class="font-semibold text-lg">Créer une conversation</h3>
+        </div>
 
-    <!-- Bouton "Enlever un utilisateur" -->
-    <button (click)="removeInGroup(); toRemove=''" class="mt-2 w-full text-center py-2 border border-red-700 text-red-700 rounded-lg bg-white hover:bg-red-700 hover:text-white transition duration-300 ease-in-out shadow-md">
-      Enlever un utilisateur
-    </button>
-    <button (click)="removeGroup();" class="mt-2 w-full text-center py-2 border border-red-700 text-red-700 rounded-lg bg-white hover:bg-red-700 hover:text-white transition duration-300 ease-in-out shadow-md">
-      Enlever un groupe
-    </button>
-  </div>
-</div>
+        <label class="block my-2">Chercher un nom d'utilisateur</label>
+        <input type="text" placeholder="Nom d'utilisateur" class="w-full font-light bg-[#202c34] border-2 border-[#3f4d54] text-white px-4 py-2 rounded focus:outline-none placeholder:text-[#ecfefe] mb-4"/>
 
-<!-- Contenu principal -->
-<div class="w-5/6 h-full bg-amber-900 relative">
-  <!-- Bouton de déconnexion -->
-  <button (click)="signOut()" class="absolute top-4 right-4 bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition duration-300 shadow-md">
-    Déconnexion
-  </button>
+        <!-- Create Conversation Button -->
+        <button class="w-3/4 bg-[#1ed7be] text-[#09151e] font-bold py-2 px-2 rounded-full shadow-lg hover:bg-gradient-to-r focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-offset-2 transition-all duration-300 ease-in-out transform hover:scale-105">
+          Créer une conversation privée
+        </button>
 
-  <!-- Conteneur de chat -->
-  <div class="mt-8 mb-4 p-4 bg-white h-[calc(100vh-200px)] overflow-y-auto rounded-lg shadow-lg" id="chat-container">
-    <!-- Messages du chat -->
-    <div class="messages flex flex-col space-y-2">
-      <div *ngFor="let message of messages" [ngClass]="{'my-message': message.user === pseudo, 'other-message': message.user !== pseudo}">
-        <div class="font-semibold">{{ message.user }}</div>
-        <div class="message mb-1">{{ message.text }}</div>
-        <div *ngIf="message.fileUrl">
-          <ng-container *ngIf="isImageFile(message.fileUrl); else mediaFile">
-            <img [src]="message.fileUrl" alt="Image" class="max-w-full h-auto rounded-lg shadow-md">
-          </ng-container>
-          <ng-template #mediaFile>
-            <ng-container *ngIf="isVideoFile(message.fileUrl); else audioFile">
-              <video [src]="message.fileUrl" controls class="max-w-full h-auto rounded-lg shadow-md"></video>
-            </ng-container>
-            <ng-template #audioFile>
-              <ng-container *ngIf="isAudioFile(message.fileUrl); else fileLink">
-                <audio [src]="message.fileUrl" controls class="max-w-full h-auto rounded-lg shadow-md"></audio>
-              </ng-container>
-              <ng-template #fileLink>
-                <a [href]="message.fileUrl" target="_blank" class="text-blue-600 underline">View File</a>
-              </ng-template>
-            </ng-template>
-          </ng-template>
+        <label class="block my-2">Choisir le nom de la conversation</label>
+        <input type="text" placeholder="Nom de la conversation" class="w-full font-light bg-[#202c34] border-2 border-[#3f4d54] text-white px-4 py-2 rounded focus:outline-none placeholder:text-[#ecfefe] mb-4"/>
+
+        <!-- Create Conversation Button -->
+        <button class="w-3/4 bg-[#1ed7be] text-[#09151e] font-bold py-2 px-2 rounded-full shadow-lg hover:bg-gradient-to-r focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-offset-2 transition-all duration-300 ease-in-out transform hover:scale-105">
+          Créer un groupe
+        </button>
+      </div>
+
+
+    </aside>
+
+    <!-- Right Section for Displaying Discussion -->
+    <main class="flex-1 p-4 flex flex-col relative">
+      <!-- Bande de couleur sous le header -->
+      <div class="h-[8%] rounded-2xl bg-[rgba(9,21,30,0.8)] flex items-center justify-between px-4">
+        <!-- Icon and Text on the Left -->
+        <div class="flex items-center text-white">
+          <span class="h-8 w-8 bg-chats-icon mr-2"></span>
+          <span>Nom du Groupe</span>
+        </div>
+        <!-- Icon on the Right with Dynamic Background Color -->
+        <span class="h-10 w-10 bg-user-three-icon cursor-pointer rounded bg-cover"
+              [ngClass]="{'bg-[#3f4d54]': isContainerVisible}"
+              (click)="toggleContainer()"></span>
+      </div>
+
+      <!-- Container for messages and input -->
+      <div [ngClass]="{'w-[72%]': isContainerVisible, 'w-full': !isContainerVisible}" class="flex-grow p-4 rounded-lg overflow-y-auto">
+        <!-- Messages Display Area -->
+        <div class="space-y-4">
+          <div class="bg-gray-200 p-2 rounded">Message 1</div>
+          <div class="bg-gray-200 p-2 rounded">Message 2</div>
+          <div class="bg-gray-200 p-2 rounded">Message 3</div>
         </div>
       </div>
-    </div>
-  </div>
 
-  <div class="fixed bottom-0 right-0 w-5/6 bg-white p-4 flex items-center justify-between rounded-lg shadow-lg">
-    <!-- Zone d'entrée de texte -->
-    <input type="text" [(ngModel)]="message" (keydown.enter)="sendMessage(); message=''" placeholder="Écrivez un message..." class="w-full bg-gray-100 border border-gray-300 rounded-lg p-2 mr-4 shadow-md focus:outline-none focus:ring focus:ring-blue-400">
+      <!-- Input for Sending Messages -->
+      <div [ngClass]="{'w-[72%]': isContainerVisible, 'w-full': !isContainerVisible}" class="mt-4 flex items-center bg-[rgba(9,21,30,0.8)] p-3 rounded-2xl">
+        <input type="text" placeholder="Envoyer un message..." class="flex-1 font-light bg-[#202c34] border-2 border-[#3f4d54] text-white px-4 py-2 rounded focus:outline-none placeholder:text-[#ecfefe]"/>
 
-    <!-- Options pour ajouter des fichiers et envoyer un message -->
-    <div class="flex items-center space-x-4">
-      <!-- Logo pour envoyer des images -->
-      <button class="bg-gray-200 hover:bg-gray-300 p-2 rounded-lg" (click)="fileInput.click()">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 000 2.828l1.414 1.414a2 2 0 002.828 0L20 12m0 0L15.172 7M20 12l-5.172-5.172m0 0L4 16m0 0l6.586 6.586a2 2 0 002.828 0L20 12" />
-        </svg>
-      </button>
-      <input type="file" class="hidden" (change)="onFileSelected($event)" #fileInput>
+        <!-- Icon for adding -->
+        <span class="h-8 w-8 ml-2 bg-plus-icon cursor-pointer"></span>
 
-      <!-- Bouton envoyer -->
-      <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow-md" (click)="sendMessage(); message=''">Envoyer</button>
-    </div>
-  </div>
-</div>
+        <!-- Icon for sending message with background color -->
+        <span class="h-10 w-10 ml-2 bg-[#1ed7be] cursor-pointer flex items-center justify-center rounded">
+          <span class="bg-paper-place-tilt-icon h-8 w-8"></span>
+        </span>
+      </div>
+
+      <!-- Right Container with Rounded Corners and Padding, Reduced Height -->
+      <div id="infoContainer" [ngClass]="{'hidden': !isContainerVisible}"
+           class="absolute right-0 bottom-0 w-[25%] h-[80vh] bg-[rgba(9,21,30,0.8)] p-4 rounded-[16px] mx-4 mb-4 transition-transform duration-300 transform"
+           [ngStyle]="{'transform': isContainerVisible ? 'translateX(0)' : 'translateX(100%)'}">
+
+        <!-- Text and Icon for Group Members, Icon Aligned to the Right -->
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-white text-lg font-semibold">Membre de groupe</h2>
+          <span class="h-8 w-8 bg-[url('src/assets/icons/UserPlus.svg')] bg-cover"></span>
+        </div>
+
+        <!-- List of Group Members in Column -->
+        <div class="flex flex-col space-y-4">
+          <!-- Member 1 -->
+          <div class="flex flex-col justify-between text-white">
+            <!-- User Icon and Name -->
+            <div class="flex justify-between pb-2.5">
+              <span class="h-8 w-8 bg-[url('src/assets/icons/user.svg')] bg-cover mr-2"></span>
+              <span>Nom de l'ami</span>
+              <span class="h-6 w-6 bg-[url('src/assets/icons/DotsThreeVertical.svg')] bg-cover cursor-pointer"></span>
+            </div>
+            <!-- Dots Icon -->
+
+            <div class="flex justify-between">
+              <span class="h-8 w-8 bg-[url('src/assets/icons/user.svg')] bg-cover mr-2"></span>
+              <span>Nom de l'ami</span>
+              <span class="h-6 w-6 bg-[url('src/assets/icons/DotsThreeVertical.svg')] bg-cover cursor-pointer"></span>
+            </div>
+            <!-- Dots Icon -->
+
+          </div>
+        </div>
+
