@@ -115,7 +115,12 @@
         <input type="text" [(ngModel)]="message" (keydown.enter)="sendMessage()" placeholder="Envoyer un message..." class="flex-1 font-light bg-[#202c34] border-2 border-[#3f4d54] text-white px-4 py-2 rounded focus:outline-none placeholder:text-[#ecfefe]"/>
 
         <!-- Icon for adding -->
-        <input type="file" (change)="(onFileSelected($event))" class="h-8 w-8 ml-2 bg-plus-icon cursor-pointer">
+        <!-- Icon for adding -->
+        <label class="h-8 w-8 ml-2 cursor-pointer">
+          <input type="file" (change)="onFileSelected($event)" class="hidden">
+          <span class="block h-full w-full bg-[url('src/assets/icons/Plus.svg')] bg-cover"></span>
+        </label>
+
 
         <!-- Icon for sending message with background color -->
         <span class="h-10 w-10 ml-2 bg-[#1ed7be] cursor-pointer flex items-center justify-center rounded">
