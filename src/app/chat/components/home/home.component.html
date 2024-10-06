@@ -6,13 +6,13 @@
       <!-- User Icon and Text -->
       <a href="#" class="flex items-center text-white">
         <span class="h-8 w-8 mr-1 bg-user-icon"></span>
-        <span>Compte</span>
+        <span>{{pseudo}}</span>
       </a>
 
       <!-- Sign Out Icon and Text -->
       <a href="#" class="flex items-center text-white">
         <span class="h-8 w-8 mr-1 bg-signout-icon"></span>
-        <span>Se déconnecter</span>
+        <span (click)="signOut()">Se déconnecter</span>
       </a>
     </div>
   </header>
@@ -77,7 +77,7 @@
         <!-- Icon and Text on the Left -->
         <div class="flex items-center text-white">
           <span class="h-8 w-8 bg-chats-icon mr-2"></span>
-          <span>Nom du Groupe</span>
+          <span>{{ group === '' ? 'Ajoutez un utilisateur ou créer un groupe pour commencer à discuter' : group }}</span>
         </div>
         <!-- Icon on the Right with Dynamic Background Color -->
         <span class="h-10 w-10 bg-user-three-icon cursor-pointer rounded bg-cover"
@@ -140,4 +140,7 @@
 
           </div>
         </div>
-
+      </div>
+    </main>
+  </div>
+</div>
