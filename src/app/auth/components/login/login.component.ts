@@ -43,15 +43,6 @@ export class LoginComponent {
       this.showModal = true;
       return;
     }
-
-    this.authService.sendPasswordResetEmail(this.email)
-      .then(() => {
-        console.log('Password reset email sent');
-        this.showSuccessModal = true;
-      })
-      .catch(error => {
-        console.error('Password reset error:', error);
-      });
   }
 
   closeModal() {
