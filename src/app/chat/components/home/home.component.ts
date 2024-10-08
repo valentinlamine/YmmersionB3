@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFireDatabase } from '@angular/fire/compat/database';
 import { ChatService } from '../../services/chat.service';
@@ -67,6 +67,20 @@ export class HomeComponent implements OnInit {
         this.messages = messages;
         console.log(this.messages);
       });
+    }
+  }
+
+  @ViewChild('messageContainer') private messageContainer!: ElementRef;
+
+  ngAfterViewChecked() {
+    this.scrollToBottom();
+  }
+
+  private scrollToBottom(): void {
+    try {
+      this.messageContainer.nativeElement.scrollTop = this.messageContainer.nativeElement.scrollHeight;
+    } catch (err) {
+      console.error('Scroll Error:', err);
     }
   }
 

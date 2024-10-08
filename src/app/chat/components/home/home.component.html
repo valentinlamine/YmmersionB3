@@ -68,7 +68,7 @@
     </aside>
 
     <!-- Middle Section for Displaying Discussion -->
-    <main class="flex-1 p-4 flex flex-col relative">
+    <main class="flex-1 p-4 flex flex-col items-center relative">
       <!-- Bande de couleur sous le header -->
       <div class="h-[80px] w-[81%] rounded-2xl bg-[rgba(9,21,30,0.9)] flex items-center justify-between px-4 mt-[80px] fixed">
         <!-- Icon and Text on the Left -->
@@ -83,9 +83,9 @@
       </div>
 
       <!-- Container for messages and input -->
-      <div [ngClass]="{'w-[72%]': isContainerVisible, 'w-full': !isContainerVisible}" class="flex-grow p-4 mt-[150px] rounded-lg overflow-y-auto"> <!-- Ajouter margin-top pour le positionner sous le bandeau -->
+      <div class="flex flex-col w-[72%] h-[68vh] p-4 mt-[174px] mr-[27%] bg-[rgba(9,21,30,0.9)] rounded-lg overflow-y-auto shadow-lg" id="messageContainer">
         <!-- Messages Display Area -->
-        <div *ngFor="let message of messages" class="flex"
+        <div *ngFor="let message of messages" class="flex mb-4"
              [ngClass]="{'justify-end': message.user === pseudo, 'justify-start': message.user !== pseudo}">
           <div class="flex flex-col max-w-[30%]">
             <div [ngClass]="{'text-right': message.user === pseudo, 'text-left': message.user !== pseudo}"
@@ -122,7 +122,7 @@
       </div>
 
       <!-- Input for Sending Messages -->
-      <div [ngClass]="{'w-[72%]': isContainerVisible, 'w-full': !isContainerVisible}" class="mt-4 flex items-center bg-[rgba(9,21,30,0.9)] p-3 rounded-2xl">
+      <div class="w-[72%] mt-4 flex mr-[27%] items-center bg-[rgba(9,21,30,0.9)] p-3 rounded-2xl">
         <input type="text" [(ngModel)]="message" (keydown.enter)="sendMessage()" placeholder="Envoyer un message..." class="flex-1 font-light bg-[#202c34] border-2 border-[#3f4d54] text-white px-4 py-2 rounded focus:outline-none placeholder:text-[#ecfefe]"/>
 
         <label class="h-8 w-8 ml-2 cursor-pointer">
@@ -136,43 +136,44 @@
     </span>
       </div>
 
-      <!-- Right Container with Rounded Corners and Padding, Minimum Height -->
-      <div id="infoContainer" [ngClass]="{'hidden': !isContainerVisible}"
-           class="absolute right-0 h-[80%] w-[25%] bg-[rgba(9,21,30,0.9)] p-4 rounded-[16px] mx-4 mb-4 mt-44 transition-transform duration-300 transform overflow-y-auto"
-           [ngStyle]="{'transform': isContainerVisible ? 'translateX(0)' : 'translateX(100%)'}">
+    </main>
 
-        <!-- Text and Icon for Group Members, Icon Aligned to the Right -->
-        <div class="flex items-center justify-between mb-4 max-h-[90%]">
-          <h2 class="text-white text-lg font-semibold">Membre de groupe</h2>
-          <span class="h-8 w-8 bg-[url('src/assets/icons/UserPlus.svg')] bg-cover" (click)="togglePopupAddInGroup()" ></span>
+    <!-- Right Container with Rounded Corners and Padding, Minimum Height -->
+    <div id="infoContainer" [ngClass]="{'hidden': !isContainerVisible}"
+         class="absolute right-0 h-[80%] w-[25%] bg-[rgba(9,21,30,0.9)] p-4 rounded-[16px] mx-4 mb-4 mt-44 transition-transform duration-300 transform overflow-y-auto"
+         [ngStyle]="{'transform': isContainerVisible ? 'translateX(0)' : 'translateX(100%)'}">
+
+      <!-- Text and Icon for Group Members, Icon Aligned to the Right -->
+      <div class="flex items-center justify-between mb-4 max-h-[90%]">
+        <h2 class="text-white text-lg font-semibold">Membre de groupe</h2>
+        <span class="h-8 w-8 bg-[url('src/assets/icons/UserPlus.svg')] bg-cover" (click)="togglePopupAddInGroup()" ></span>
+      </div>
+      <div [ngClass]="{'hidden': !isPopupAddInGroupVisible}" class="absolute w-[90%] h-[35%] bg-white rounded-lg flex-col p-4">
+        <div class="w-full text-[18px] pb-5 ">Ajouter un membre</div>
+        <label class="w-full">Chercher un ou plusieurs noms d'utilisateur</label>
+        <div class="flex-row h-[20%] w-full">
+          <input [(ngModel)]="memberListTmp" (keydown.enter)="addInGroupList()" type="text" placeholder="Entrez le nom d'utilisateur d'un ami" class="w-5/6 h-full bg-red-600">
+          <button (click)="addInGroupList()" class="w-1/6 h-full bg-sky-500">Ajouter</button>
         </div>
-        <div [ngClass]="{'hidden': !isPopupAddInGroupVisible}" class="absolute w-[90%] h-[35%] bg-white rounded-lg flex-col p-4">
-          <div class="w-full text-[18px] pb-5 ">Ajouter un membre</div>
-          <label class="w-full">Chercher un ou plusieurs noms d'utilisateur</label>
-          <div class="flex-row h-[20%] w-full">
-            <input [(ngModel)]="memberListTmp" (keydown.enter)="addInGroupList()" type="text" placeholder="Entrez le nom d'utilisateur d'un ami" class="w-5/6 h-full bg-red-600">
-            <button (click)="addInGroupList()" class="w-1/6 h-full bg-sky-500">Ajouter</button>
-          </div>
-          <ul class="flex-row" >
+        <ul class="flex-row" >
           <li *ngFor="let name of memberList" class="flex-row w-fit" >
             {{name}} <button (click)="removeInGroupList(name)" class="bg-red-500">X</button>
           </li>
-          </ul>
-          <button (click)="addInGroup()" class="w-full border-2 border-black mt-4">Ajouter des amis</button>
-        </div>
-        <!-- List of Group Members in Column -->
-        <div class="flex flex-col space-y-4">
-          <div *ngFor="let member of members" class="flex flex-col justify-between text-white">
-            <!-- User Icon and Name -->
-            <div class="flex justify-between pb-2.5">
-              <span class="h-8 w-8 bg-[url('src/assets/icons/user.svg')] bg-cover mr-2"></span>
-              <span>{{ member }}</span> <!-- Affiche le nom du membre -->
-              <span class="h-6 w-6 bg-[url('src/assets/icons/DotsThreeVertical.svg')] bg-cover cursor-pointer"></span>
-            </div>
+        </ul>
+        <button (click)="addInGroup()" class="w-full border-2 border-black mt-4">Ajouter des amis</button>
+      </div>
+      <!-- List of Group Members in Column -->
+      <div class="flex flex-col space-y-4">
+        <div *ngFor="let member of members" class="flex flex-col justify-between text-white">
+          <!-- User Icon and Name -->
+          <div class="flex justify-between pb-2.5">
+            <span class="h-8 w-8 bg-[url('src/assets/icons/user.svg')] bg-cover mr-2"></span>
+            <span>{{ member }}</span> <!-- Affiche le nom du membre -->
+            <span class="h-6 w-6 bg-[url('src/assets/icons/DotsThreeVertical.svg')] bg-cover cursor-pointer"></span>
           </div>
         </div>
       </div>
-    </main>
+    </div>
 
   </div>
   <div [ngClass]="{'hidden': !isError}" class="absolute w-[500px] h-[150px] bg-red-600 bottom-4 right-4">
@@ -180,6 +181,3 @@
     <div>{{errorMessage}}</div>
   </div>
 </div>
-
-
-
