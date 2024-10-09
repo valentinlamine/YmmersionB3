@@ -143,7 +143,7 @@
 
       <!-- Right Popup Container (Appears when isContainerVisible is true) -->
       <div id="infoContainer" [ngClass]="{'hidden': !isContainerVisible}"
-           class="absolute right-0 h-[75%] w-[25%] bg-[rgba(9,21,30,0.9)] p-4 rounded-[16px] mx-4 mb-4 mt-52 transition-transform duration-300 transform overflow-y-auto"
+           class="absolute right-0 min-h-[75%] w-[25%] bg-[rgba(9,21,30,0.9)] p-4 rounded-[16px] mx-4 mb-4 mt-48 transition-transform duration-300 transform overflow-y-auto"
            [ngStyle]="{'transform': isContainerVisible ? 'translateX(0)' : 'translateX(100%)'}">
 
         <!-- Text and Icon for Group Members, Icon Aligned to the Right -->
