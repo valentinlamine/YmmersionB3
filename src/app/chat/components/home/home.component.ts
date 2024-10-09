@@ -246,9 +246,12 @@ export class HomeComponent implements OnInit {
     const messageDate = new Date(timestamp);
     const now = new Date();
 
+    // Réinitialisation des heures/minutes/secondes pour comparer uniquement les jours
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const messageDay = new Date(messageDate.getFullYear(), messageDate.getMonth(), messageDate.getDate());
+
     // Calcul de la différence entre les dates en jours
-    const diffInTime = now.getTime() - messageDate.getTime();
-    const diffInDays = Math.floor(diffInTime / (1000 * 60 * 60 * 24));
+    const diffInDays = Math.floor((today.getTime() - messageDay.getTime()) / (1000 * 60 * 60 * 24));
 
     const timeString = messageDate.toLocaleTimeString('fr-FR', {
       hour: '2-digit',
