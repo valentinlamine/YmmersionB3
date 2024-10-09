@@ -14,3 +14,19 @@
   background-color: #1c262c; /* Couleur de la piste (barre grise) */
   border-radius: 10px; /* Coins arrondis pour la piste */
 }
+
+#infoContainer {
+  transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+  opacity: 0;
+  transform: translateX(100%);
+}
+
+#infoContainer.translate-x-0 {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+#infoContainer.translate-x-full {
+  opacity: 0;
+  transform: translateX(100%);
+}

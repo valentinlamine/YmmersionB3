@@ -1,4 +1,4 @@
-<div class="min-h-screen bg-[url('src/assets/background/rectangle-2.png')] bg-cover bg-center flex flex-col">
+<div class="min-h-screen bg-[url('src/assets/background/rectangle-2.png')] bg-cover bg-center flex flex-col overflow-x-hidden">
   <!-- Header -->
   <header class="h-[8vh] w-full bg-[rgba(9,21,30,0.9)] flex items-center justify-end px-4 fixed z-50">
     <div class="flex items-center space-x-4">
@@ -140,31 +140,41 @@
       </div>
 
       <!-- Right Popup Container (Appears when isContainerVisible is true) -->
-      <div id="infoContainer" [ngClass]="{'hidden': !isContainerVisible}"
-           class="absolute right-0 min-h-[75%] w-[25%] bg-[rgba(9,21,30,0.9)] p-4 rounded-[16px] mx-4 mb-4 mt-48 transition-transform duration-300 transform overflow-y-auto"
-           [ngStyle]="{'transform': isContainerVisible ? 'translateX(0)' : 'translateX(100%)'}">
+      <div id="infoContainer" [ngClass]="{'translate-x-full opacity-0': !isContainerVisible, 'translate-x-0 opacity-100': isContainerVisible}"
+           class="absolute right-0 min-h-[75%] w-[25%] bg-[rgba(9,21,30,0.9)] p-4 rounded-[16px] mx-4 mb-4 mt-48 transition-transform transition-opacity duration-300 transform overflow-y-auto">
 
         <!-- Text and Icon for Group Members, Icon Aligned to the Right -->
         <div class="flex items-center justify-between mb-4 max-h-[90%]">
           <h2 class="text-white text-lg font-semibold">Membre de groupe</h2>
-          <span class="h-8 w-8 bg-[url('src/assets/icons/UserPlus.svg')] bg-cover" (click)="togglePopupAddInGroup()"></span>
+          <span class="h-8 w-8 bg-[url('src/assets/icons/UserPlus.svg')] bg-cover cursor-pointer" (click)="togglePopupAddInGroup()"></span>
         </div>
 
-        <div [ngClass]="{'hidden': !isPopupAddInGroupVisible}" class="absolute w-[90%] h-[35%] bg-white rounded-lg flex-col p-4">
-          <div class="w-full text-[18px] pb-5 ">Ajouter un membre</div>
-          <label class="w-full">Chercher un ou plusieurs noms d'utilisateur</label>
-          <div class="flex-row h-[20%] w-full">
-            <input [(ngModel)]="memberListTmp" (keydown.enter)="addInGroupList()" type="text" placeholder="Entrez le nom d'utilisateur d'un ami" class="w-5/6 h-full bg-red-600">
-            <button (click)="addInGroupList()" class="w-1/6 h-full bg-sky-500">Ajouter</button>
+        <div [ngClass]="{'hidden': !isPopupAddInGroupVisible}" class="absolute w-[90%] h-[35%] bg-[rgba(9,21,30,1)] text-white rounded-lg flex flex-col p-4 z-50">
+          <div class="w-full text-lg pb-5 font-semibold">Ajouter un membre au groupe</div>
+
+          <label class="w-full font-light mb-2">Chercher un ou plusieurs noms d'utilisateur</label>
+
+          <div class="flex h-[20%] w-full">
+            <input [(ngModel)]="memberListTmp" (keydown.enter)="addInGroupList()" type="text" placeholder="Entrez le nom d'un utilisateur"
+                   class="w-5/6 h-full bg-[#202c34] border-2 border-[#3f4d54] text-white px-4 py-2 rounded-l-lg focus:outline-none placeholder:text-[#ecfefe]"/>
+
+            <button (click)="addInGroupList()"
+                    class="w-1/6 h-full bg-[url('src/assets/icons/Plus.svg')] bg-no-repeat bg-center bg-contain rounded-r-lg focus:outline-none focus:ring-2 focus:ring-pink-400 transition-all duration-300 ease-in-out">
+            </button>
           </div>
-          <ul class="flex-row" >
-            <li *ngFor="let name of memberList" class="flex-row w-fit" >
-              {{name}} <button (click)="removeInGroupList(name)" class="bg-red-500">X</button>
+
+          <ul class="flex flex-col space-y-2 mt-4">
+            <li *ngFor="let name of memberList" class="flex items-center justify-between w-full bg-[#3f4d54] p-2 rounded">
+              {{name}}
+              <button (click)="removeInGroupList(name)" class="bg-red-500 text-white p-1 rounded">X</button>
             </li>
           </ul>
-          <button (click)="addInGroup()" class="w-full border-2 border-black mt-4">Ajouter des amis</button>
-        </div>
 
+          <button (click)="addInGroup()"
+                  class="w-full mt-4 bg-[#1ed7be] text-[#09151e] font-bold py-2 px-2 rounded-full shadow-lg hover:bg-gradient-to-r focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-offset-2 transition-all duration-300 ease-in-out transform hover:scale-105">
+            Ajouter au groupe
+          </button>
+        </div>
         <div class="flex flex-col space-y-4">
           <div *ngFor="let member of members" class="flex flex-col justify-between text-white">
             <!-- User Icon and Name -->

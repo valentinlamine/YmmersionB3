@@ -115,32 +115,31 @@ export class HomeComponent implements OnInit {
     console.log('Message:', this.message);
     console.log('Selected File:', this.selectedFile);
 
-    // Si l'input est vide et qu'aucun fichier n'est sélectionné, on ne fait rien
+    // If both message and file are empty, do nothing
     if (!this.message.trim() && !this.selectedFile) {
       console.warn('Message and file are both empty. Nothing to send.');
       return;
     }
 
-    // Si un fichier est sélectionné, envoyer le fichier puis le message
+    // If a file is selected, upload the file and then send the message with the file URL
     if (this.selectedFile) {
       this.chatService.uploadFile(this.selectedFile).subscribe(url => {
         console.log('File URL:', url); // Log the file URL to verify
         this.chatService.sendMessage(this.message, this.pseudo, this.group, url).then(() => {
           console.log('Message sent with file');
           this.selectedFile = null;
-          this.scrollToBottom(); // Scroll après envoi
+          this.scrollToBottom(); // Scroll after sending
         }).catch(error => {
           console.error('Error sending message:', error);
         });
       }, error => {
         console.error('File upload error:', error);
       });
-    }
-    // Si aucun fichier n'est sélectionné, envoyer uniquement le message
-    else {
+    } else {
+      // If no file is selected, send only the message
       this.chatService.sendMessage(this.message, this.pseudo, this.group).then(() => {
         console.log('Message sent');
-        this.scrollToBottom(); // Scroll après envoi
+        this.scrollToBottom(); // Scroll after sending
       }).catch(error => {
         console.error('Error sending message:', error);
       });
