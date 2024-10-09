@@ -3,7 +3,6 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFireDatabase } from '@angular/fire/compat/database';
 import { ChatService } from '../../services/chat.service';
 import {Router} from "@angular/router";
-import {Observable} from "rxjs";
 
 @Component({
   selector: 'app-home',
@@ -26,6 +25,8 @@ export class HomeComponent implements OnInit {
   userConv: any[] = [];
   members: any[] = [];
   selectedFile: File | null = null;
+  enlargedImageUrl: string | null = null;
+
   errorMessage: string = '';
 
   constructor(
@@ -70,20 +71,6 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  @ViewChild('messageContainer') private messageContainer!: ElementRef;
-
-  ngAfterViewChecked() {
-    this.scrollToBottom();
-  }
-
-  private scrollToBottom(): void {
-    try {
-      this.messageContainer.nativeElement.scrollTop = this.messageContainer.nativeElement.scrollHeight;
-    } catch (err) {
-      console.error('Scroll Error:', err);
-    }
-  }
-
   changeGroup(groupName: string) {
     this.group = groupName;
     console.log(`Group changed to: ${this.group}`);
@@ -111,40 +98,57 @@ export class HomeComponent implements OnInit {
     }
   }
 
+  @ViewChild('messageContainer') private messageContainer!: ElementRef;
+
+
+// Fonction pour descendre la scrollbar après l'envoi du message
+  private scrollToBottom(): void {
+    try {
+      this.messageContainer.nativeElement.scrollTop = this.messageContainer.nativeElement.scrollHeight;
+    } catch (err) {
+      console.error('Scroll Error:', err);
+    }
+  }
+
   sendMessage() {
     console.log('sendMessage called');
     console.log('Message:', this.message);
     console.log('Selected File:', this.selectedFile);
 
+    // Si l'input est vide et qu'aucun fichier n'est sélectionné, on ne fait rien
     if (!this.message.trim() && !this.selectedFile) {
       console.warn('Message and file are both empty. Nothing to send.');
       return;
     }
 
+    // Si un fichier est sélectionné, envoyer le fichier puis le message
     if (this.selectedFile) {
       this.chatService.uploadFile(this.selectedFile).subscribe(url => {
         console.log('File URL:', url); // Log the file URL to verify
         this.chatService.sendMessage(this.message, this.pseudo, this.group, url).then(() => {
           console.log('Message sent with file');
-          this.message = '';
           this.selectedFile = null;
+          this.scrollToBottom(); // Scroll après envoi
         }).catch(error => {
           console.error('Error sending message:', error);
         });
       }, error => {
         console.error('File upload error:', error);
       });
-    } else {
+    }
+    // Si aucun fichier n'est sélectionné, envoyer uniquement le message
+    else {
       this.chatService.sendMessage(this.message, this.pseudo, this.group).then(() => {
-        console.log('Message sent without file');
-        this.message = '';
+        console.log('Message sent');
+        this.scrollToBottom(); // Scroll après envoi
       }).catch(error => {
         console.error('Error sending message:', error);
       });
     }
-    this.message = "";
-    this.selectedFile = null;
+    this.message = '';
   }
+
+
 
   isImageFile(fileUrl: string): boolean {
     const isImage = /\.(jpeg|jpg|gif|png)(\?.*)?$/i.test(fileUrl);
@@ -162,6 +166,16 @@ export class HomeComponent implements OnInit {
     const isAudio = /\.(mp3|wav|ogg)(\?.*)?$/i.test(fileUrl);
     console.log(`isAudioFile: ${fileUrl} -> ${isAudio}`);
     return isAudio;
+  }
+
+  // Method to handle image click
+  enlargeImage(url: string): void {
+    this.enlargedImageUrl = url;
+  }
+
+  // Method to close the enlarged image
+  closeImage(): void {
+    this.enlargedImageUrl = null;
   }
 
   removeGroup() {
