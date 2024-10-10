@@ -17,6 +17,7 @@ module.exports = {
         "user-three-icon": "url('src/assets/icons/UserThree.svg')",
         "user-plus-icon": "url('src/assets/icons/UserPlus.svg')",
         "dotsThreeVertical-icon": "url('src/assets/icons/DotsThreeVertical.svg')",
+        "close-icon": "url('src/assets/icons/Close.svg')",
       }
     },
   },

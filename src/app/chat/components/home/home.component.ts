@@ -3,6 +3,7 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFireDatabase } from '@angular/fire/compat/database';
 import { ChatService } from '../../services/chat.service';
 import {Router} from "@angular/router";
+import {animation} from "@angular/animations";
 
 @Component({
   selector: 'app-home',
@@ -34,7 +35,8 @@ export class HomeComponent implements OnInit {
     private chatService: ChatService,
     private db: AngularFireDatabase,
     private router: Router
-  ) {}
+  ) {
+  }
 
   ngOnInit() {
     this.afAuth.authState.subscribe(user => {
@@ -148,7 +150,6 @@ export class HomeComponent implements OnInit {
   }
 
 
-
   isImageFile(fileUrl: string): boolean {
     const isImage = /\.(jpeg|jpg|gif|png)(\?.*)?$/i.test(fileUrl);
     console.log(`isImageFile: ${fileUrl} -> ${isImage}`);
@@ -183,7 +184,7 @@ export class HomeComponent implements OnInit {
     this.messages = [];
   }
 
-  addGroup(){
+  addGroup() {
     this.chatService.addGroup(this.name, this.pseudo)
   }
 
@@ -223,8 +224,8 @@ export class HomeComponent implements OnInit {
     this.chatService.addConv(this.toConv, this.pseudo)
   }
 
-  removeInGroup() {
-    this.chatService.removeInGroup(this.toRemove, this.group);
+  removeInGroup(pseudo: string) {
+    this.chatService.removeInGroup(pseudo, this.group);
   }
 
   signOut() {
@@ -236,12 +237,14 @@ export class HomeComponent implements OnInit {
 
   // Variable pour contrôler la visibilité du conteneur de droite
   isContainerVisible = false;
+
   toggleContainer() {
     this.isContainerVisible = !this.isContainerVisible;
   }
 
   // Variable pour contrôler la visibilité de la pop-up
   isPopupVisible: boolean = false;
+
   togglePopup(): void {
     this.isPopupVisible = !this.isPopupVisible;
   }
@@ -251,6 +254,7 @@ export class HomeComponent implements OnInit {
   }
 
   isPopupAddInGroupVisible: boolean = false;
+
   togglePopupAddInGroup(): void {
     this.isPopupAddInGroupVisible = !this.isPopupAddInGroupVisible;
   }
@@ -293,11 +297,15 @@ export class HomeComponent implements OnInit {
   }
 
   isError: boolean = false;
+
   toggleError(): void {
     this.isError = !this.isError;
   }
 
   showError() {
     this.isError = true;
+    setTimeout(() => {
+      this.isError = false;
+    }, 5000);
   }
 }
