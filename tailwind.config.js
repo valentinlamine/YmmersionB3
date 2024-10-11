@@ -18,6 +18,8 @@ module.exports = {
         "user-plus-icon": "url('src/assets/icons/UserPlus.svg')",
         "dotsThreeVertical-icon": "url('src/assets/icons/DotsThreeVertical.svg')",
         "close-icon": "url('src/assets/icons/Close.svg')",
+        "eye-icon": "url('src/assets/icons/Eye.svg')",
+        "eyeSlash-icon": "url('src/assets/icons/EyeSlash.svg')",
       }
     },
   },

@@ -46,14 +46,33 @@
           <input [(ngModel)]="pseudo" type="text" id="pseudo" placeholder="Votre pseudo" [ngModelOptions]="{standalone: true}" class="text-[#ecfefe] mt-2 font-light placeholder-[#ecfefe] block w-full px-4 py-3 bg-[#202c34] border border-[#3f4d54] rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-pink-400 transition-all duration-300" />
         </div>
 
-        <div>
+        <div class="relative">
           <label for="password" class="block text-sm font-medium text-white">Mot de passe</label>
-          <input [(ngModel)]="password" type="password" id="password" placeholder="Votre mot de passe" [ngModelOptions]="{standalone: true}" class="text-[#ecfefe] mt-2 font-light placeholder-[#ecfefe] block w-full px-4 py-3 bg-[#202c34] border border-[#3f4d54] rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-pink-400 transition-all duration-300"/>
+          <input [(ngModel)]="password" [type]="showPassword ? 'text' : 'password'" id="password" placeholder="Votre mot de passe"
+                 [ngModelOptions]="{standalone: true}"
+                 class="text-[#ecfefe] mt-2 font-light placeholder-[#ecfefe] block w-full px-4 py-3 bg-[#202c34] border border-[#3f4d54] rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-pink-400 transition-all duration-300">
+
+          <!-- Bouton pour afficher/masquer le mot de passe avec un span ayant un arrière-plan dynamique -->
+          <span (click)="togglePasswordVisibility()"
+                class="absolute right-3 top-10 h-6 w-6 bg-no-repeat bg-contain cursor-pointer"
+                [ngClass]="showPassword ? 'bg-eye-icon' : 'bg-eyeSlash-icon'">
+          </span>
         </div>
 
-        <div>
+        <div class="relative mt-4">
           <label for="confirmPassword" class="block text-sm font-medium text-white">Confirmez le mot de passe</label>
-          <input type="password" id="confirmPassword" placeholder="Votre mot de passe" name="confirmPassword" class="text-white mt-2 font-light placeholder-[#ecfefe] block w-full px-4 py-3 bg-[#202c34] border border-[#3f4d54] rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-pink-400 transition-all duration-300">
+          <input [(ngModel)]="confirmPassword" [type]="showConfirmPassword ? 'text' : 'password'" id="confirmPassword" placeholder="Confirmez votre mot de passe"
+                 name="confirmPassword"
+                 class="text-white mt-2 font-light placeholder-[#ecfefe] block w-full px-4 py-3 bg-[#202c34] border border-[#3f4d54] rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-pink-400 transition-all duration-300">
+
+          <!-- Bouton pour afficher/masquer la confirmation du mot de passe avec un span ayant un arrière-plan dynamique -->
+          <span (click)="toggleConfirmPasswordVisibility()"
+                class="absolute right-3 top-10 h-6 w-6 bg-no-repeat bg-contain cursor-pointer"
+                [ngClass]="showConfirmPassword ? 'bg-eye-icon' : 'bg-eyeSlash-icon'">
+          </span>
+        </div>
+        <div [ngClass]="{'hidden': !isError, 'error-message': isError}" class="w-4/5">
+          <button (click)="toggleError()" class="pt-2 text-red-600 right-0">{{errorMessage}}</button>
         </div>
 
         <!-- Bouton s'inscrire -->

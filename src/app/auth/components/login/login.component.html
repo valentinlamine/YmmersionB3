@@ -29,9 +29,21 @@
           <label for="email" class="block text-sm font-medium text-white">E-mail</label>
           <input [(ngModel)]="email" [ngModelOptions]="{standalone: true}" type="email" id="email" placeholder="exemple@ychat.com" class="mt-2 font-light placeholder-[#ecfefe] text-[#ecfefe] block w-full px-4 py-3 bg-[#202c34] border border-[#3f4d54] rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-pink-400 focus:bg-opacity-50 transition-all duration-300"/>
         </div>
-        <div id="password-field">
+        <div class="relative" id="password-field">
           <label for="password" class="block text-sm font-medium text-white">Mot de passe</label>
-          <input [(ngModel)]="password" [ngModelOptions]="{standalone: true}" type="password" id="password" placeholder="Votre mot de passe" class="mt-2 font-light placeholder-[#ecfefe] text-[#ecfefe] block w-full px-4 py-3 bg-[#202c34] border border-[#3f4d54] rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-pink-400 focus:bg-opacity-50 transition-all duration-300"/>
+
+          <!-- Conteneur de l'input avec icône -->
+          <div class="relative">
+            <input [(ngModel)]="password" [type]="showPassword ? 'text' : 'password'" id="password" placeholder="Votre mot de passe"
+                   [ngModelOptions]="{standalone: true}"
+                   class="text-[#ecfefe] mt-2 font-light placeholder-[#ecfefe] block w-full px-4 py-3 bg-[#202c34] border border-[#3f4d54] rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-pink-400 transition-all duration-300">
+
+            <!-- Icône d'œil pour afficher/masquer le mot de passe -->
+            <span (click)="togglePasswordVisibility()"
+                  class="absolute right-4 top-1/2 transform -translate-y-1/2 h-6 w-6 bg-no-repeat bg-contain cursor-pointer"
+                  [ngClass]="showPassword ? 'bg-eyeSlash-icon' : 'bg-eye-icon'">
+            </span>
+          </div>
         </div>
 
         <!-- Bouton de connexion classique -->

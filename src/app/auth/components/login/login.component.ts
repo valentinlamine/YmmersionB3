@@ -12,8 +12,13 @@ export class LoginComponent {
   protected password: string = '';
   showModal: boolean = false;
   showSuccessModal: boolean = false;
+  showPassword: boolean = false;
 
   constructor(private authService: AuthService, private router: Router) {}
+
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
+  }
 
   signIn() {
     this.authService.signIn(this.email, this.password)
