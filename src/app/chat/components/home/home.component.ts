@@ -218,6 +218,11 @@ export class HomeComponent implements OnInit {
   addInGroup() {
     console.log(this.memberList);
     this.chatService.addInGroup(this.memberList, this.group, this.pseudo);
+    if (this.memberList.length === 0) {
+      this.errorMessage = 'La liste ne peut pas être vide';
+      this.showError();
+      return;
+    }
   }
 
   addConv() {
