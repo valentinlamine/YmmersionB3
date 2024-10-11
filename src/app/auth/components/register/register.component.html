@@ -71,7 +71,7 @@
                 [ngClass]="showConfirmPassword ? 'bg-eye-icon' : 'bg-eyeSlash-icon'">
           </span>
         </div>
-        <div [ngClass]="{'hidden': !isError, 'error-message': isError}" class="w-4/5">
+        <div [ngClass]="{'hidden': !isError, 'error-message': isError}" class="w-full">
           <button (click)="toggleError()" class="pt-2 text-red-600 right-0">{{errorMessage}}</button>
         </div>
 
@@ -80,7 +80,6 @@
         <div class="text-center">
           <a href="../auth/login" class="text-sm w-max text-white hover:text-pink-300 transition duration-300">Vous avez déjà un compte ?</a>
         </div>
-
       </form>
     </div>
   </div>

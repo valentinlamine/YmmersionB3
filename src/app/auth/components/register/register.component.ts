@@ -28,20 +28,50 @@ export class RegisterComponent {
   }
 
   signUp() {
+    // Réinitialiser le message d'erreur
+    this.errorMessage = '';
+
+    // Vérification de l'email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!this.email || !emailRegex.test(this.email)) {
+      this.errorMessage = "Veuillez entrer une adresse e-mail valide.";
+      this.showError();
+      return;
+    }
+
+    // Vérification du pseudo
+    if (!this.pseudo || this.pseudo.trim().length === 0) {
+      this.errorMessage = "Le pseudo est obligatoire.";
+      this.showError();
+      return;
+    }
+
+    // Vérification du mot de passe
+    if (!this.password || this.password.length < 6) {
+      this.errorMessage = "Le mot de passe doit contenir au moins 6 caractères.";
+      this.showError();
+      return;
+    }
+
+    // Vérification de la confirmation du mot de passe
     if (this.password !== this.confirmPassword) {
       this.errorMessage = "Les mots de passe ne correspondent pas.";
       this.showError();
       return;
     }
+
+    // Si tout est bon, procéder à l'inscription
     this.authService.signUp(this.email, this.password, this.pseudo)
       .then(result => {
         console.log('User signed up:', result);
         this.router.navigate(['../']);
       })
       .catch(error => {
-        console.error('Sign up error:', error);
+        this.errorMessage = "Mail déjà utilisé.";
+        this.showError();
       });
   }
+
 
   signUpWithGoogle() {
     this.authService.signUpWithGoogle()

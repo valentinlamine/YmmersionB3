@@ -5,3 +5,24 @@
 .hidden {
   display: none; /* Keep this for controlling visibility */
 }
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.error-message {
+  animation: fadeInOut 4s ease-in-out;
+  animation-fill-mode: forwards;
+  transition: opacity 4s ease-in-out; /* Ensures smooth transition */
+}

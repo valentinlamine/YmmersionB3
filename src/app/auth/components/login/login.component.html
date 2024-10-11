@@ -45,6 +45,9 @@
             </span>
           </div>
         </div>
+        <div [ngClass]="{'hidden': !isError, 'error-message': isError}" class="w-full">
+          <button (click)="toggleError()" class="pt-2 text-red-600 right-0">{{errorMessage}}</button>
+        </div>
 
         <!-- Bouton de connexion classique -->
         <button id="login-btn" class="w-full bg-[#1ed7be] text-[#09151e] font-bold py-3 px-4 rounded-full shadow-lg hover:bg-gradient-to-r focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-offset-2 transition-all duration-300 ease-in-out transform hover:scale-105" (click)="signIn()">Se connecter</button>
