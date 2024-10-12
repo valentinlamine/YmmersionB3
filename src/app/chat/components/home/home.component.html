@@ -55,11 +55,15 @@
               [ngClass]="{'bg-[#3f4d54]': isContainerVisible}"
               (click)="toggleContainer()"></span>
       </div>
-
       <!-- Container for messages and input -->
       <div class="flex flex-col w-full mt-[174px] transition-all duration-300">
+        <!-- Check if there are no conversations or groups -->
+        <div *ngIf="userGroups.length === 0 && userConv.length === 0" class="flex items-center justify-center h-[68vh] text-white text-2xl font-bold text-center p-5">
+          Commencer une nouvelle discussion ou créer un groupe
+        </div>
+
         <!-- Messages Display Area (Dynamically resized without centering) -->
-        <div #messageContainer class="flex flex-col h-[68vh] p-4 rounded-lg overflow-y-scroll transition-all duration-300 "
+        <div *ngIf="userGroups.length > 0 || userConv.length > 0" #messageContainer class="flex flex-col h-[68vh] p-4 rounded-lg overflow-y-scroll transition-all duration-300"
              id="messageContainer" [ngStyle]="{'width': isContainerVisible ? 'calc(100% - 27%)' : '100%'}">
           <!-- Messages -->
           <div *ngFor="let message of messages" class="flex mb-4"
@@ -98,12 +102,12 @@
         </div>
 
         <!-- Input for Sending Messages -->
-        <div class="w-full mt-4 flex items-center bg-[rgba(9,21,30,0.9)] p-3 rounded-2xl transition-all duration-300"
-             [ngStyle]="{'width': isContainerVisible ? 'calc(100% - 27%)' : '100%'}">
-          <input type="text" [(ngModel)]="message" (keydown.enter)="sendMessage()" placeholder="Envoyer un message..." class="flex-1 font-light bg-[#202c34] border-2 border-[#3f4d54] text-white px-4 py-2 rounded focus:outline-none placeholder:text-[#ecfefe]"/>
+        <div *ngIf="userGroups.length > 0 || userConv.length > 0" class="w-full mt-4 flex items-center bg-[rgba(9,21,30,0.9)] p-3 rounded-2xl transition-all duration-300" [ngStyle]="{'width': isContainerVisible ? 'calc(100% - 27%)' : '100%'}">
+          <input type="text" [(ngModel)]="message" (keydown.enter)="sendMessage()" placeholder="Envoyer un message..."
+                 class="flex-1 font-light bg-[#202c34] border-2 border-[#3f4d54] text-white px-4 py-2 rounded focus:outline-none placeholder:text-[#ecfefe]"/>
 
           <label class="h-8 w-8 ml-2 cursor-pointer">
-            <input type="file" (change)="onFileSelected($event)" class="hidden">
+            <input type="file" (change)="onFileSelected($event)" class="hidden" [disabled]="userGroups.length === 0 && userConv.length === 0">
             <span class="block h-full w-full bg-[url('src/assets/icons/Plus.svg')] bg-cover"></span>
           </label>
 
@@ -165,6 +169,7 @@
           </div>
         </div>
       </div>
+
       <div *ngIf="isPopupVisible" class="absolute right-[102.5%] top-[15%] w-[15%] bg-[rgba(9,21,30,1)] text-white rounded-lg p-4 shadow-lg z-[1000] border border-[#ecfefe]">
         <!-- Popup Content -->
         <div class="mb-4">
