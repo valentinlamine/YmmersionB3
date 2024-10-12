@@ -30,39 +30,15 @@
 
       <!-- Discussions/Groups -->
       <ul class="space-y-4">
-        <li *ngFor="let group of userGroups" class="flex items-center text-white hover:text-pink-300 cursor-pointer">
+        <li *ngFor="let group of userGroups" class="flex items-center text-white  cursor-pointer">
           <span class="h-8 w-8 mr-2 bg-chats-icon"></span>
-          <span (click)="changeGroup(group.name)">{{ group.name }}</span>
+          <span class="hover:text-pink-300 changeGroup(group.name)">{{ group.name }}</span>
         </li>
         <li *ngFor="let group of userConv" class="flex items-center text-white hover:text-pink-300 cursor-pointer">
           <span class="h-8 w-8 mr-2 bg-chats-icon"></span>
           <span (click)="changeGroup(group.name)">{{ getOtherParticipant(group.name) }}</span>
         </li>
       </ul>
-
-      <!-- Popup Menu -->
-      <div *ngIf="isPopupVisible" class="absolute left-[80%] top-[7%] w-[400px] bg-[rgba(9,21,30,1)] text-white rounded-lg p-4 shadow-lg z-[1000]">
-        <!-- Popup Content -->
-        <div class="mb-4">
-          <h3 class="font-semibold text-lg">Créer une conversation</h3>
-        </div>
-
-        <label class="block my-2">Chercher un nom d'utilisateur</label>
-        <input type="text" [(ngModel)]="toConv" (keydown.enter)="addConv()" placeholder="Nom d'utilisateur" class="w-full font-light bg-[#202c34] border-2 border-[#3f4d54] text-white px-4 py-2 rounded focus:outline-none placeholder:text-[#ecfefe] mb-4"/>
-
-        <!-- Create Conversation Button -->
-        <button (click)="addConv()" class="w-3/4 bg-[#1ed7be] text-[#09151e] font-bold py-2 px-2 rounded-full shadow-lg hover:bg-gradient-to-r focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-offset-2 transition-all duration-300 ease-in-out transform hover:scale-105">
-          Créer une conversation privée
-        </button>
-
-        <label class="block my-2">Choisir le nom de la conversation</label>
-        <input type="text" [(ngModel)]="name" (keydown.enter)="addGroup()" placeholder="Nom de la conversation" class="w-full font-light bg-[#202c34] border-2 border-[#3f4d54] text-white px-4 py-2 rounded focus:outline-none placeholder:text-[#ecfefe] mb-4"/>
-
-        <!-- Create Conversation Button -->
-        <button (click)="addGroup()" class="w-3/4 bg-[#1ed7be] text-[#09151e] font-bold py-2 px-2 rounded-full shadow-lg hover:bg-gradient-to-r focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-offset-2 transition-all duration-300 ease-in-out transform hover:scale-105">
-          Créer un groupe
-        </button>
-      </div>
     </aside>
 
     <!-- Middle Section for Displaying Discussion -->
@@ -120,7 +96,6 @@
             </div>
           </div>
         </div>
-
 
         <!-- Input for Sending Messages -->
         <div class="w-full mt-4 flex items-center bg-[rgba(9,21,30,0.9)] p-3 rounded-2xl transition-all duration-300"
@@ -189,6 +164,34 @@
             </div>
           </div>
         </div>
+      </div>
+      <div *ngIf="isPopupVisible" class="absolute right-[102.5%] top-[15%] w-[15%] bg-[rgba(9,21,30,1)] text-white rounded-lg p-4 shadow-lg z-[1000] border border-[#ecfefe]">
+        <!-- Popup Content -->
+        <div class="mb-4">
+          <h3 class="font-semibold text-lg">Créer une conversation</h3>
+        </div>
+
+        <label class="block my-2">Chercher un nom d'utilisateur</label>
+        <input type="text" [(ngModel)]="toConv" (keydown.enter)="addConv()" placeholder="Nom d'utilisateur" class="w-full font-light bg-[#202c34] border-2 border-[#3f4d54] text-white px-4 py-2 rounded focus:outline-none placeholder:text-[#ecfefe] mb-4"/>
+
+        <!-- Create Conversation Button -->
+        <button (click)="addConv()" class="bg-[#1ed7be] text-[#09151e] font-bold py-2 px-2 rounded-full shadow-lg hover:bg-gradient-to-r focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-offset-2 transition-all duration-300 ease-in-out transform hover:scale-105">
+          Créer une conversation
+        </button>
+
+        <div class="flex items-center my-6">
+          <div class="flex-grow border-t-2 border-[#3f4d54]"></div>
+          <span class="mx-4 text-white font-medium">ou</span>
+          <div class="flex-grow border-t-2 border-[#3f4d54]"></div>
+        </div>
+
+        <label class="block my-2">Choisir le nom du groupe</label>
+        <input type="text" [(ngModel)]="name" (keydown.enter)="addGroup()" placeholder="Nom de la conversation" class="w-full font-light bg-[#202c34] border-2 border-[#3f4d54] text-white px-4 py-2 rounded focus:outline-none placeholder:text-[#ecfefe] mb-4"/>
+
+        <!-- Create Conversation Button -->
+        <button (click)="addGroup()" class="w-3/4 bg-[#1ed7be] text-[#09151e] font-bold py-2 px-2 rounded-full shadow-lg hover:bg-gradient-to-r focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-offset-2 transition-all duration-300 ease-in-out transform hover:scale-105">
+          Créer un groupe
+        </button>
       </div>
     </main>
 
