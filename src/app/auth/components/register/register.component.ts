@@ -37,6 +37,7 @@ export class RegisterComponent {
       this.errorMessage = "Veuillez entrer une adresse e-mail valide.";
       this.showError();
       return;
+
     }
 
     // Vérification du pseudo
@@ -86,14 +87,12 @@ export class RegisterComponent {
 
   isError: boolean = false;
 
-  toggleError(): void {
-    this.isError = !this.isError;
-  }
-
   showError() {
-    this.isError = true;
-    setTimeout(() => {
-      this.isError = false;
-    }, 5000);
+    if (!this.isError) {
+      this.isError = true;
+      setTimeout(() => {
+        this.isError = false; // L'erreur disparaîtra après 4 secondes
+      }, 4000);
+    }
   }
 }

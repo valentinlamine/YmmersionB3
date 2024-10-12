@@ -141,8 +141,10 @@
                     class="w-1/6 h-full bg-[url('src/assets/icons/Plus.svg')] bg-no-repeat bg-center bg-contain rounded-r-lg focus:outline-none focus:ring-2 focus:ring-pink-400 transition-all duration-300 ease-in-out">
             </button>
           </div>
-          <div [ngClass]="{ 'error-message': isError}" class="w-full">
-            <button (click)="toggleError()" class="text-red-600 right-0 min">{{errorMessage}}</button>
+          <div class="w-full min-h-6 ">
+            <div *ngIf="isError" class="error-message">
+              <span class="text-red-600 right-0 min">{{errorMessage}}</span>
+            </div>
           </div>
 
 

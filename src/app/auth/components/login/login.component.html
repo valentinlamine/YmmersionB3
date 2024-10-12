@@ -45,8 +45,10 @@
             </span>
           </div>
         </div>
-        <div [ngClass]="{ 'error-message': isError}" class="w-full">
-          <button (click)="toggleError()" class="text-red-600 right-0 min">{{errorMessage}}</button>
+        <div class="w-full min-h-6 ">
+          <div *ngIf="isError" class="error-message">
+            <span class="text-red-600 right-0 min">{{errorMessage}}</span>
+          </div>
         </div>
 
         <!-- Bouton de connexion classique -->

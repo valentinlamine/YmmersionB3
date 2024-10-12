@@ -80,14 +80,12 @@ export class LoginComponent {
 
   isError: boolean = false;
 
-  toggleError(): void {
-    this.isError = !this.isError;
-  }
-
   showError() {
-    this.isError = true;
-    setTimeout(() => {
-      this.isError = false;
-    }, 5000);
+    if (!this.isError) {
+      this.isError = true;
+      setTimeout(() => {
+        this.isError = false; // L'erreur disparaîtra après 4 secondes
+      }, 4000);
+    }
   }
 }

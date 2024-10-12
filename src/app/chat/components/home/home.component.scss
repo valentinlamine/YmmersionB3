@@ -31,6 +31,10 @@
   transform: translateX(100%);
 }
 
+.error-message {
+  animation: fadeInOut 4s ease-in;
+}
+
 @keyframes fadeInOut {
   0% {
     opacity: 0;
@@ -44,11 +48,5 @@
   100% {
     opacity: 0;
   }
-}
-
-.error-message {
-  animation: fadeInOut 4s ease-in-out;
-  animation-fill-mode: forwards;
-  transition: opacity 4s ease-in-out;
 }
 
