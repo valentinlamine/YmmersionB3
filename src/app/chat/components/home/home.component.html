@@ -35,10 +35,10 @@
         </div>
 
         <label class="block my-2">Chercher un nom d'utilisateur</label>
-        <input type="text" [(ngModel)]="toConv" (keydown.enter)="addConv()" placeholder="Nom d'utilisateur" class="w-full font-light bg-[#202c34] border-2 border-[#3f4d54] text-white px-4 py-2 rounded focus:outline-none placeholder:text-[#ecfefe] mb-4"/>
+        <input type="text" [(ngModel)]="toConv" (keydown.enter)="addConv(); togglePopup()" placeholder="Nom d'utilisateur" class="w-full font-light bg-[#202c34] border-2 border-[#3f4d54] text-white px-4 py-2 rounded focus:outline-none placeholder:text-[#ecfefe] mb-4"/>
 
         <!-- Create Conversation Button -->
-        <button (click)="addConv()" class="bg-[#1ed7be] text-[#09151e] font-bold py-2 px-2 rounded-full shadow-lg hover:bg-gradient-to-r focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-offset-2 transition-all duration-300 ease-in-out transform hover:scale-105">
+        <button (click)="addConv(); togglePopup()" class="bg-[#1ed7be] text-[#09151e] font-bold py-2 px-2 rounded-full shadow-lg hover:bg-gradient-to-r focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-offset-2 transition-all duration-300 ease-in-out transform hover:scale-105">
           Créer une conversation
         </button>
 
@@ -49,10 +49,10 @@
         </div>
 
         <label class="block my-2">Choisir le nom du groupe</label>
-        <input type="text" [(ngModel)]="name" (keydown.enter)="addGroup()" placeholder="Nom de la conversation" class="w-full font-light bg-[#202c34] border-2 border-[#3f4d54] text-white px-4 py-2 rounded focus:outline-none placeholder:text-[#ecfefe] mb-4"/>
+        <input type="text" [(ngModel)]="name" (keydown.enter)="addGroup(); togglePopup()" placeholder="Nom de la conversation" class="w-full font-light bg-[#202c34] border-2 border-[#3f4d54] text-white px-4 py-2 rounded focus:outline-none placeholder:text-[#ecfefe] mb-4"/>
 
         <!-- Create Conversation Button -->
-        <button (click)="addGroup()" class="w-3/4 bg-[#1ed7be] text-[#09151e] font-bold py-2 px-2 rounded-full shadow-lg hover:bg-gradient-to-r focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-offset-2 transition-all duration-300 ease-in-out transform hover:scale-105">
+        <button (click)="addGroup(); togglePopup()" class="w-3/4 bg-[#1ed7be] text-[#09151e] font-bold py-2 px-2 rounded-full shadow-lg hover:bg-gradient-to-r focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-offset-2 transition-all duration-300 ease-in-out transform hover:scale-105">
           Créer un groupe
         </button>
       </div>
