@@ -386,8 +386,9 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
   }
 
-  removeInGroup(pseudo: string) {
-    this.chatService.removeInGroup(pseudo, this.group);
+  async removeInGroup(pseudo: string) {
+    await this.chatService.removeInGroup(pseudo, this.group);
+    this.group = "";
   }
 
   signOut() {
