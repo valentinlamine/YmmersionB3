@@ -81,8 +81,7 @@
         <!-- Icon and Text on the Left -->
         <div class="flex items-center text-white">
           <span class="h-8 w-8 bg-chats-icon mr-2"></span>
-          <input [(ngModel)]="groupName" *ngIf="group !== ''; else noGroupMessage" value="{{group}}"  type="text" class="bg-transparent" (change)="renameGroup()" >
-          <ng-template #noGroupMessage>Ajoutez un utilisateur ou créer un groupe pour commencer à discuter</ng-template>
+          <span>{{ group === '' ? 'Ajoutez un utilisateur ou créer un groupe pour commencer à discuter' : group }}</span>
         </div>
         <!-- Icon on the Right with Dynamic Background Color -->
         <span class="h-10 w-10 bg-user-three-icon cursor-pointer rounded bg-cover"

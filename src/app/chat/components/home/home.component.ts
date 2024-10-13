@@ -39,6 +39,8 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
   messageSub: Subscription = new Subscription();
+  membersSub: Subscription = new Subscription();
+  viewSub: Subscription = new Subscription();
 
   constructor(
     private afAuth: AngularFireAuth,
@@ -56,6 +58,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.db.object(`users/${this.user}`).valueChanges().subscribe((userData: any) => {
           if (userData) {
             this.pseudo = userData.pseudo;
+            console.log('Group1:', this.group);
 
             // Récupérer les groupes auxquels l'utilisateur appartient
             this.chatService.getUserGroups(this.pseudo).subscribe(groups => {
@@ -63,8 +66,10 @@ export class HomeComponent implements OnInit, OnDestroy {
               console.log("User groups: ", this.userGroups);
               if (this.userGroups.length > 0 && this.group == '') {
                 this.changeGroup(this.userGroups[0].name);
+                console.log('Group2:', this.group);
               }
             });
+            console.log('Group3:', this.group);
 
             this.chatService.getUserConv(this.pseudo).subscribe(conv => {
               this.userConv = conv;
@@ -95,14 +100,72 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
+  onRemovedFromGroup() {
+    console.log('Vous etes mort');
+    // Réinitialiser le groupe courant
+    this.group = '';
+    this.messages = [];
+    this.members = [];
+
+    // Optionnel : naviguer vers un autre groupe ou une autre vue
+    this.chatService.getUserGroups(this.pseudo).subscribe(groups => {
+      this.userGroups = groups;
+      if (this.userGroups.length > 0) {
+        this.changeGroup(this.userGroups[0].name); // Changer vers le premier groupe disponible
+      } else {
+        console.log('Vous n\'êtes plus dans aucun groupe.');
+        // Optionnel : Naviguer vers une autre vue ou afficher un message
+      }
+    });
+  }
+
   async changeGroup(groupName: string): Promise<void> {
+    let id;
     try {
       this.messageSub.unsubscribe();
+      this.membersSub.unsubscribe();
+      this.viewSub.unsubscribe();
       this.group = groupName;
       console.log(`Group changed to: ${this.group}`);
 
       // Charger les membres du groupe avec un seul abonnement
-      await this.loadMembers();
+      this.membersSub = this.loadMembers();
+      id = '';
+      await this.chatService.getGroupIdByName(this.group)
+        .then(groupId => {
+          if (groupId) {
+            id = groupId;
+            console.log(`L'ID du groupe est: ${groupId}`);
+          } else {
+            console.log('Aucun groupe trouvé.');
+          }
+        })
+        .catch(error => {
+          console.error('Erreur lors de la récupération de l\'ID du groupe:', error);
+        });
+
+      this.viewSub = this.db.object(`groupes/${id}/members`).snapshotChanges().subscribe(snapshot => {
+        const members = snapshot.payload.val(); // Récupérer les données de Firebase
+
+        if (members) {
+          console.log('Members data:', members);
+
+          if (typeof members === 'string') {
+            // Convertir la chaîne en tableau en utilisant la virgule comme séparateur
+            const memberList = members.split(',').map(member => member.trim());
+            console.log('Member list:', memberList);
+
+            if (!memberList.includes(this.pseudo)) {
+              console.log('Vous avez été supprimé du groupe.');
+              this.onRemovedFromGroup(); // Gérer le cas où l'utilisateur est supprimé
+            }
+          } else {
+            console.error('Erreur : La liste des membres n\'est pas une chaîne.', members);
+          }
+        } else {
+          console.error('Erreur : Aucun membre trouvé pour ce groupe.');
+        }
+      });
 
       // Écouter les messages en continu
       this.messageSub = this.chatService.getMessages(this.group, this.pseudo).pipe(
@@ -128,7 +191,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       if (groupType == "conv") {
         console.log(`Mauvais type trouvé pour le groupe ${this.group}.`);
       } else {
-        this.chatService.renameGroup(this.group, this.groupName);
+        await this.chatService.renameGroup(this.group, this.groupName);
       }
     } catch (error) {
       console.error('Erreur lors de la récupération du type de groupe:', error);
@@ -146,21 +209,14 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
   }
 
-  loadMembers(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      this.chatService.getMembers(this.group).pipe(
+  loadMembers(): Subscription {
+    return this.chatService.getMembers(this.group).pipe(
       ).subscribe(
         members => {
           this.members = members;
           console.log('Members:', this.members);
-          resolve();
         },
-        error => {
-          console.error('Erreur lors du chargement des membres :', error);
-          reject(error);
-        }
       );
-    });
   }
 
   @ViewChild('messageContainer') private messageContainer!: ElementRef;

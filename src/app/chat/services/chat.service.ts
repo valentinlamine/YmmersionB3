@@ -317,18 +317,6 @@ export class ChatService {
     });
   }
 
-  InGroup(toAdd: string, groupName: string): Observable<boolean> {
-    return this.getGroupByName(groupName).pipe(take(1), map(groupData => {
-        if (groupData) {
-          const {members} = groupData;
-          // Vérifier si le pseudo est déjà dans la liste des membres
-          return members.includes(toAdd);
-        }
-        return false;
-      })
-    );
-  }
-
   checkPseudoExists(toAdd: string): Observable<boolean> {
     return this.db.list('users', ref => ref.orderByChild('pseudo').equalTo(toAdd))
       .snapshotChanges()
@@ -345,7 +333,29 @@ export class ChatService {
       );
   }
 
-  renameGroup(oldName: string, newName: string) {
+  getGroupIdByName(groupName: string): Promise<string | null | undefined> {
+    return this.db.list<Group>('groupes', ref => ref.orderByChild('name').equalTo(groupName)).snapshotChanges().pipe(
+      take(1),
+      map(groups => {
+        if (groups && groups.length > 0) {
+          // Renvoie le nom du groupe comme ID
+          return groups[0].payload.key; // La clé ici est l'ID du groupe
+        } else {
+          console.warn(`Aucun groupe trouvé avec le nom: ${groupName}`);
+          return null; // Renvoie null si aucun groupe n'est trouvé
+        }
+      })
+    ).toPromise();
+  }
+
+  async renameGroup(oldName: string, newName: string) {
+    console.log(oldName + " -> " + newName);
+    const groupExists = await this.checkGroupExists(newName).pipe(take(1)).toPromise();
+
+    if (groupExists) {
+      console.log("Le groupe existe déjà.");
+      return;
+    }
     this.getGroupByName(oldName).pipe(take(1)).subscribe(groupData => {
       if (groupData) {
         const {key} = groupData;
