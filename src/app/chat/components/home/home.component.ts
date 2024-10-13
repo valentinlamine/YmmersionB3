@@ -252,6 +252,7 @@ export class HomeComponent implements OnInit {
       this.showError();
       return;
     }
+    this.memberList = [];
   }
 
   async addConv(): Promise<void> {
