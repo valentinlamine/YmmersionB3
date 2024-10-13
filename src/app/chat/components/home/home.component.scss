@@ -1,16 +1,16 @@
 /* Custom Scrollbar */
-#messageContainer::-webkit-scrollbar {
+.messageContainer::-webkit-scrollbar {
   width: 12px; /* Largeur totale de la scrollbar */
 }
 
-#messageContainer::-webkit-scrollbar-thumb {
+.messageContainer::-webkit-scrollbar-thumb {
   background-color: #3f4d54; /* Couleur du pouce */
   border-radius: 10px; /* Coins arrondis pour le pouce */
   width: 6px; /* Réduit la largeur du pouce */
   border: 3px solid #1c262c; /* Ajoute un contour qui "réduit" visuellement la largeur du pouce */
 }
 
-#messageContainer::-webkit-scrollbar-track {
+.messageContainer::-webkit-scrollbar-track {
   background-color: #1c262c; /* Couleur de la piste (barre grise) */
   border-radius: 10px; /* Coins arrondis pour la piste */
 }
