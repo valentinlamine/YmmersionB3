@@ -28,15 +28,18 @@
         <span class="h-8 w-8 bg-add-chat-icon cursor-pointer" (click)="togglePopup()"></span>
       </div>
 
-      <!-- Discussions/Groups -->
+      <!-- Liste des groupes et conversations -->
       <ul class="space-y-4">
-        <li *ngFor="let group of userGroups" class="flex items-center text-white  cursor-pointer">
+        <li *ngFor="let group of userGroups" class="flex justify-between items-center text-white cursor-pointer">
           <span class="h-8 w-8 mr-2 bg-chats-icon"></span>
-          <span class="hover:text-pink-300 changeGroup(group.name)">{{ group.name }}</span>
+          <span (click)="changeGroup(group.name)" class="hover:text-pink-300">{{ group.name }}</span>
+          <span (click)="confirmRemoveGroup(group.name)" class="h-8 w-8 bg-close-icon bg-cover"></span>
         </li>
-        <li *ngFor="let group of userConv" class="flex items-center text-white hover:text-pink-300 cursor-pointer">
-          <span class="h-8 w-8 mr-2 bg-chats-icon"></span>
+
+        <li *ngFor="let group of userConv" class="flex justify-between items-center text-white hover:text-pink-300 cursor-pointer">
+          <span class="h-8 w-8 mr-2 bg-chat-icon"></span>
           <span (click)="changeGroup(group.name)">{{ getOtherParticipant(group.name) }}</span>
+          <span (click)="confirmRemoveGroup(group.name)" class="h-8 w-8 bg-close-icon bg-cover"></span>
         </li>
       </ul>
     </aside>
@@ -125,7 +128,7 @@
         <!-- Text and Icon for Group Members, Icon Aligned to the Right -->
         <div class="flex items-center justify-between mb-4 max-h-[90%]">
           <h2 class="text-white text-lg font-semibold">Membre de groupe</h2>
-          <span class="h-8 w-8 bg-[url('src/assets/icons/UserPlus.svg')] bg-cover cursor-pointer" (click)="togglePopupAddInGroup()"></span>
+          <span class="h-8 w-8 bg-user-plus-icon bg-cover cursor-pointer" (click)="togglePopupAddInGroup()"></span>
         </div>
 
         <div [ngClass]="{'hidden': !isPopupAddInGroupVisible}" class="absolute w-[90%] h-[35%] bg-[rgba(9,21,30,1)] text-white rounded-lg flex flex-col p-4 z-50">
@@ -166,7 +169,7 @@
             <div class="flex justify-between pb-2.5">
               <span class="h-8 w-8 bg-[url('src/assets/icons/user.svg')] bg-cover mr-2"></span>
               <span>{{ member }}</span> <!-- Affiche le nom du membre -->
-              <span (click) = "removeInGroup(member)" class="h-6 w-6 bg-[url('src/assets/icons/Close.svg')] bg-cover cursor-pointer"></span>
+              <span (click) = "removeInGroup(member)" class="h-6 w-6 bg-close-icon bg-cover cursor-pointer"></span>
             </div>
           </div>
         </div>
@@ -201,10 +204,20 @@
         </button>
       </div>
     </main>
-
-
   </div>
   <div *ngIf="enlargedImageUrl" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50" (click)="closeImage()">
     <img [src]="enlargedImageUrl" (click)="$event.stopPropagation()">
+  </div>
+
+  <!-- Popup de confirmation -->
+  <div *ngIf="showConfirmationPopup" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+    <div class="bg-[rgba(9,21,30,9)] p-6 rounded-lg shadow-lg max-w-md w-full">
+      <h2 class="text-xl text-white font-semibold mb-4">Confirmer le départ</h2>
+      <p class="text-white mb-6">Êtes-vous sûr de vouloir quitter {{ groupToRemove }} ?</p>
+      <div class="flex justify-end space-x-4">
+        <button (click)="cancelRemove()" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">Annuler</button>
+        <button (click)="confirmRemove()" class="bg-red-600 hover:bg-red-800 text-white font-bold py-2 px-4 rounded">Supprimer</button>
+      </div>
+    </div>
   </div>
 </div>

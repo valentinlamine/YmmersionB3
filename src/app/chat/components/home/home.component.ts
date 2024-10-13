@@ -4,6 +4,8 @@ import { AngularFireDatabase } from '@angular/fire/compat/database';
 import { ChatService } from '../../services/chat.service';
 import {Router} from "@angular/router";
 import {animation} from "@angular/animations";
+import firebase from "firebase/compat/app";
+import {lastValueFrom} from "rxjs";
 
 @Component({
   selector: 'app-home',
@@ -27,6 +29,8 @@ export class HomeComponent implements OnInit {
   members: any[] = [];
   selectedFile: File | null = null;
   enlargedImageUrl: string | null = null;
+  showConfirmationPopup: boolean = false;
+  groupToRemove: string = '';
 
   errorMessage: string = '';
 
@@ -42,12 +46,10 @@ export class HomeComponent implements OnInit {
     this.afAuth.authState.subscribe(user => {
       if (user) {
         this.user = user.uid;
-        console.log("User ID: ", this.user);
 
         this.db.object(`users/${this.user}`).valueChanges().subscribe((userData: any) => {
           if (userData) {
             this.pseudo = userData.pseudo;
-            console.log("Pseudo: ", this.pseudo);
 
             // Récupérer les groupes auxquels l'utilisateur appartient
             this.chatService.getUserGroups(this.pseudo).subscribe(groups => {
@@ -78,7 +80,7 @@ export class HomeComponent implements OnInit {
     if (this.group) {
       this.chatService.getMessages(this.group, this.pseudo).subscribe(messages => {
         this.messages = messages;
-        console.log(this.messages);
+        console.log("On est dans le oninit" + this.messages);
       });
     }
   }
@@ -122,41 +124,41 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  sendMessage() {
+  async sendMessage() {
     console.log('sendMessage called');
     console.log('Message:', this.message);
     console.log('Selected File:', this.selectedFile);
 
-    // If both message and file are empty, do nothing
-    if (!this.message.trim() && !this.selectedFile) {
-      console.warn('Message and file are both empty. Nothing to send.');
-      return;
-    }
+    try {
+      // Si le message et le fichier sont vides, ne rien envoyer
+      if (!this.message.trim() && !this.selectedFile) {
+        console.warn('Message and file are both empty. Nothing to send.');
+        return;
+      }
 
-    // If a file is selected, upload the file and then send the message with the file URL
-    if (this.selectedFile) {
-      this.chatService.uploadFile(this.selectedFile).subscribe(url => {
-        console.log('File URL:', url); // Log the file URL to verify
-        this.chatService.sendMessage(this.message, this.pseudo, this.group, url).then(() => {
-          console.log('Message sent with file');
-          this.selectedFile = null;
-          this.scrollToBottom(); // Scroll after sending
-        }).catch(error => {
-          console.error('Error sending message:', error);
-        });
-      }, error => {
-        console.error('File upload error:', error);
-      });
-    } else {
-      // If no file is selected, send only the message
-      this.chatService.sendMessage(this.message, this.pseudo, this.group).then(() => {
+      // Si un fichier est sélectionné, téléchargez le fichier avant d'envoyer le message
+      if (this.selectedFile) {
+        const url = await lastValueFrom(this.chatService.uploadFile(this.selectedFile));
+        console.log('File URL:', url); // Vérifier l'URL du fichier
+
+        await this.chatService.sendMessage(this.message, this.pseudo, this.group, url);
+        console.log('Message sent with file');
+
+        // Réinitialiser le fichier sélectionné après l'envoi
+        this.selectedFile = null;
+      } else {
+        // Si aucun fichier n'est sélectionné, envoyer uniquement le message
+        await this.chatService.sendMessage(this.message, this.pseudo, this.group);
         console.log('Message sent');
-        this.scrollToBottom(); // Scroll after sending
-      }).catch(error => {
-        console.error('Error sending message:', error);
-      });
+      }
+
+      // Nettoyer le champ de message après envoi et faire défiler en bas
+      this.message = '';
+      this.scrollToBottom(); // Faire défiler après l'envoi
+    } catch (error) {
+      // Gérer les erreurs lors de l'envoi du message ou du téléchargement du fichier
+      console.error('Error sending message:', error);
     }
-    this.message = '';
   }
 
 
@@ -188,14 +190,26 @@ export class HomeComponent implements OnInit {
     this.enlargedImageUrl = null;
   }
 
-  removeGroup() {
-    this.chatService.removeGroup(this.group);
-    this.group = '';
-    this.messages = [];
-  }
+  async addGroup(): Promise<void> {
+    if (!this.name || !this.pseudo) {
+      console.warn('Le nom du groupe ou le pseudo est manquant.');
+      return;
+    }
 
-  addGroup() {
-    this.chatService.addGroup(this.name, this.pseudo)
+    try {
+      // Appeler le service pour ajouter le groupe
+      await this.chatService.addGroup(this.name, this.pseudo);
+      console.log(`Groupe ${this.name} ajouté avec succès.`);
+
+      // Réinitialiser le champ du nom après l'ajout
+      this.name = '';
+
+    } catch (error) {
+      // Gestion des erreurs en cas d'échec
+      console.error('Erreur lors de l\'ajout du groupe :', error);
+      this.errorMessage = 'Une erreur est survenue lors de l\'ajout du groupe.';
+      this.showError(); // Optionnel : Montre une alerte ou un message d'erreur à l'utilisateur
+    }
   }
 
   addInGroupList() {
@@ -225,9 +239,9 @@ export class HomeComponent implements OnInit {
     this.memberList = this.memberList.filter(item => item !== name);
   }
 
-  addInGroup() {
+  async addInGroup() {
     console.log(this.memberList);
-    this.chatService.addInGroup(this.memberList, this.group, this.pseudo);
+    await this.chatService.addInGroup(this.memberList, this.group, this.pseudo);
     if (this.memberList.length === 0) {
       this.errorMessage = 'La liste ne peut pas être vide';
       this.showError();
@@ -235,8 +249,26 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  addConv() {
-    this.chatService.addConv(this.toConv, this.pseudo)
+  async addConv(): Promise<void> {
+    if (!this.toConv || !this.pseudo) {
+      console.warn('Le nom du groupe ou le pseudo est manquant.');
+      return;
+    }
+
+    try {
+      // Appeler le service pour ajouter le groupe
+      await this.chatService.addConv(this.toConv, this.pseudo);
+      console.log(`Conv ${this.name} ajouté avec succès.`);
+
+      // Réinitialiser le champ du nom après l'ajout
+      this.toConv = '';
+
+    } catch (error) {
+      // Gestion des erreurs en cas d'échec
+      console.error('Erreur lors de l\'ajout de la conv :', error);
+      this.errorMessage = 'Une erreur est survenue lors de l\'ajout de la conv.';
+      this.showError(); // Optionnel : Montre une alerte ou un message d'erreur à l'utilisateur
+    }
   }
 
   removeInGroup(pseudo: string) {
@@ -319,6 +351,49 @@ export class HomeComponent implements OnInit {
       setTimeout(() => {
         this.isError = false; // L'erreur disparaîtra après 4 secondes
       }, 4000);
+    }
+  }
+
+  // Fonction pour afficher la popup avec le groupe à supprimer
+  confirmRemoveGroup(groupName: string): void {
+    this.groupToRemove = groupName;
+    this.showConfirmationPopup = true;
+  }
+
+  // Fonction pour annuler la suppression
+  cancelRemove(): void {
+    this.showConfirmationPopup = false;
+    this.groupToRemove = '';
+  }
+
+  // Fonction pour confirmer la suppression
+  async confirmRemove(): Promise<void> {
+    if (this.groupToRemove) {
+      // Supprimer le groupe de Firebase
+      await this.chatService.removeInGroup(this.pseudo, this.groupToRemove).then(() => {
+        console.log(`Groupe ${this.groupToRemove} supprimé avec succès.`);
+
+        // Mettre à jour l'état local pour refléter la suppression
+        this.userGroups = this.userGroups.filter(group => group.key !== this.groupToRemove);
+
+        // Réinitialiser les autres propriétés liées au groupe
+        this.group = '';
+        this.messages = [];
+        this.members = [];
+
+        // Fermer la pop-up de confirmation
+        this.showConfirmationPopup = false;
+
+        // Optionnel : vous pouvez également vous désabonner d'éventuels observables ici
+        // si vous avez mis en place des abonnements qui peuvent créer des effets indésirables
+      }).catch(error => {
+        console.error('Erreur lors de la suppression du groupe: ', error);
+        this.errorMessage = 'Une erreur est survenue lors de la suppression du groupe.';
+        this.showError();
+      });
+    } else {
+      // Si aucun groupe n'est sélectionné
+      console.warn('Aucun groupe sélectionné pour la suppression.');
     }
   }
 }
