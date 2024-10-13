@@ -1,18 +1,19 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFireDatabase } from '@angular/fire/compat/database';
 import { ChatService } from '../../services/chat.service';
 import {Router} from "@angular/router";
 import {animation} from "@angular/animations";
 import firebase from "firebase/compat/app";
-import {lastValueFrom} from "rxjs";
+import {lastValueFrom, Subject, Subscription, takeUntil} from "rxjs";
+import {switchMap, take} from "rxjs/operators";
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
   user: any;
   pseudo: string = '';
   group: string = '';
@@ -36,6 +37,9 @@ export class HomeComponent implements OnInit {
 
   errorMessage: string = '';
 
+  private destroy$ = new Subject<void>();
+  messageSub: Subscription = new Subscription();
+
   constructor(
     private afAuth: AngularFireAuth,
     private chatService: ChatService,
@@ -57,6 +61,9 @@ export class HomeComponent implements OnInit {
             this.chatService.getUserGroups(this.pseudo).subscribe(groups => {
               this.userGroups = groups;
               console.log("User groups: ", this.userGroups);
+              if (this.userGroups.length > 0 && this.group == '') {
+                this.changeGroup(this.userGroups[0].name);
+              }
             });
 
             this.chatService.getUserConv(this.pseudo).subscribe(conv => {
@@ -64,7 +71,7 @@ export class HomeComponent implements OnInit {
               console.log("User conversations: ", this.userConv);
 
               // Check if there are any conversations and set the first one as the active conversation
-              if (this.userConv.length > 0) {
+              if (this.userConv.length > 0 && this.group == '') {
                 this.changeGroup(this.userConv[0].name);
               }
             });
@@ -82,20 +89,50 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  changeGroup(groupName: string) {
-    this.group = groupName;
-    console.log(`Group changed to: ${this.group}`);
-
-    this.loadMembers();
-    // Recharger les messages du nouveau groupe
-    this.chatService.getMessages(this.group, this.pseudo).subscribe(messages => {
-      this.messages = messages;
-      console.log(this.messages);
-    });
+  ngOnDestroy(): void {
+    // Compléter le sujet pour se désabonner
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
-  renameGroup() {
-    this.chatService.renameGroup(this.group, this.groupName);
+  async changeGroup(groupName: string): Promise<void> {
+    try {
+      this.messageSub.unsubscribe();
+      this.group = groupName;
+      console.log(`Group changed to: ${this.group}`);
+
+      // Charger les membres du groupe avec un seul abonnement
+      await this.loadMembers();
+
+      // Écouter les messages en continu
+      this.messageSub = this.chatService.getMessages(this.group, this.pseudo).pipe(
+        // Utiliser takeUntil pour se désabonner à la destruction ou à d'autres événements
+      ).subscribe(
+        messages => {
+          this.messages = messages;
+          console.log(this.messages);
+        },
+        error => {
+          console.error('Erreur lors du chargement des messages :', error);
+        }
+      );
+
+    } catch (error) {
+      console.error('Erreur dans changeGroup:', error);
+    }
+  }
+
+  async renameGroup() {
+    try {
+      const groupType = await this.chatService.getType(this.group);
+      if (groupType == "conv") {
+        console.log(`Mauvais type trouvé pour le groupe ${this.group}.`);
+      } else {
+        this.chatService.renameGroup(this.group, this.groupName);
+      }
+    } catch (error) {
+      console.error('Erreur lors de la récupération du type de groupe:', error);
+    }
   }
 
   onFileSelected(event: any) {
@@ -109,15 +146,21 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  loadMembers() {
-    if (this.group) { // Assurez-vous qu'un groupe est sélectionné
-      this.chatService.getMembers(this.group).subscribe(members => {
-        this.members = members; // Mettre à jour la variable members
-        console.log("Members of group:", this.members);
-      }, error => {
-        console.error('Error loading members:', error);
-      });
-    }
+  loadMembers(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.chatService.getMembers(this.group).pipe(
+      ).subscribe(
+        members => {
+          this.members = members;
+          console.log('Members:', this.members);
+          resolve();
+        },
+        error => {
+          console.error('Erreur lors du chargement des membres :', error);
+          reject(error);
+        }
+      );
+    });
   }
 
   @ViewChild('messageContainer') private messageContainer!: ElementRef;
@@ -245,11 +288,22 @@ export class HomeComponent implements OnInit {
 
   async addInGroup() {
     console.log(this.memberList);
-    await this.chatService.addInGroup(this.memberList, this.group, this.pseudo);
-    if (this.memberList.length === 0) {
-      this.errorMessage = 'La liste ne peut pas être vide';
-      this.showError();
-      return;
+
+    try {
+      const groupType = await this.chatService.getType(this.group);
+      if (groupType == "conv") {
+        console.log(`Mauvais type trouvé pour le groupe ${this.group}.`);
+      } else {
+        await this.chatService.addInGroup(this.memberList, this.group, this.pseudo);
+        if (this.memberList.length === 0) {
+          this.errorMessage = 'La liste ne peut pas être vide';
+          this.showError();
+          return;
+        }
+        return
+      }
+    } catch (error) {
+      console.error('Erreur lors de la récupération du type de groupe:', error);
     }
     this.memberList = [];
   }

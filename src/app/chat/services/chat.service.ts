@@ -362,6 +362,26 @@ export class ChatService {
     });
   }
 
+  getType(groupName: string): Promise<string | null> {
+    return new Promise((resolve, reject) => {
+      this.getGroupByName(groupName).pipe(
+        take(1) // Limiter à une seule émission
+      ).subscribe(
+        groupData => {
+          if (groupData && groupData.type) {
+            resolve(groupData.type); // Retourner le type du groupe
+          } else {
+            resolve(null); // Retourner null si aucun type n'est trouvé
+          }
+        },
+        error => {
+          console.error('Erreur lors de la récupération du type de groupe :', error);
+          reject(error); // Rejeter la promesse en cas d'erreur
+        }
+      );
+    });
+  }
+
   async removeInGroup(toRemove: string, groupName: string): Promise<void> {
     console.log("Remove in group ACTION ON: " + groupName);
 
