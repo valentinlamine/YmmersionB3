@@ -31,6 +31,36 @@
   transform: translateX(100%);
 }
 
+//Preview image
+.preview-image {
+  max-width: 150px; /* Adjust the width as needed */
+  max-height: 150px; /* Adjust the height as needed */
+  border-radius: 8px; /* Optional: Add rounded corners */
+  object-fit: cover; /* Ensure the image fits within the container */
+}
+
+//ANIMATIONS --------------------------------------
+
+/* CSS for the popup animation */
+.popup-container {
+  opacity: 0; /* Start invisible */
+  transform: translateY(-20px); /* Start slightly above */
+  transition: opacity 0.3s ease, transform 0.3s ease; /* Transition properties */
+}
+
+.popup-enter {
+  opacity: 1; /* Fully visible */
+  transform: translateY(0); /* Original position */
+}
+
+.popup-exit {
+  opacity: 0; /* Invisible */
+  transform: translateY(-20px); /* Slide back up */
+}
+
+
+
+// Animation erreur
 .error-message {
   animation: fadeInOut 4s ease-in;
 }

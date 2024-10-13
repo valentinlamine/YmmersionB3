@@ -29,6 +29,7 @@ export class HomeComponent implements OnInit {
   userConv: any[] = [];
   members: any[] = [];
   selectedFile: File | null = null;
+  imagePreviewUrl: string | null = null;
   enlargedImageUrl: string | null = null;
   showConfirmationPopup: boolean = false;
   groupToRemove: string = '';
@@ -99,6 +100,13 @@ export class HomeComponent implements OnInit {
 
   onFileSelected(event: any) {
     this.selectedFile = event.target.files[0];
+    if (this.selectedFile) {
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.imagePreviewUrl = e.target.result;
+      };
+      reader.readAsDataURL(this.selectedFile);
+    }
   }
 
   loadMembers() {
@@ -144,8 +152,9 @@ export class HomeComponent implements OnInit {
         await this.chatService.sendMessage(this.message, this.pseudo, this.group, url);
         console.log('Message sent with file');
 
-        // Réinitialiser le fichier sélectionné après l'envoi
+        // Réinitialiser le fichier sélectionné et l'URL de prévisualisation après l'envoi
         this.selectedFile = null;
+        this.imagePreviewUrl = null;
       } else {
         // Si aucun fichier n'est sélectionné, envoyer uniquement le message
         await this.chatService.sendMessage(this.message, this.pseudo, this.group);
@@ -181,13 +190,8 @@ export class HomeComponent implements OnInit {
   }
 
   // Method to handle image click
-  enlargeImage(url: string): void {
+  enlargeImage(url: string | null): void {
     this.enlargedImageUrl = url;
-  }
-
-  // Method to close the enlarged image
-  closeImage(): void {
-    this.enlargedImageUrl = null;
   }
 
   async addGroup(): Promise<void> {

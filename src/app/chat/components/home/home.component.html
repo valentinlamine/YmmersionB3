@@ -1,4 +1,4 @@
-<div class="min-h-screen bg-[url('src/assets/background/rectangle-2.png')] bg-cover bg-center flex flex-col overflow-x-hidden">
+<div class="min-h-screen bg-[url('src/assets/background/rectangle-2.png')] bg-cover bg-center flex flex-col overflow-hidden">
   <!-- Header -->
   <header class="h-[8vh] w-full bg-[rgba(9,21,30,0.9)] flex items-center justify-end px-4 fixed z-50">
     <div class="flex items-center space-x-4">
@@ -16,7 +16,7 @@
     </div>
   </header>
 
-  <div class="flex flex-1">
+  <div class="flex flex-1 overflow-hidden">
 
     <!-- Left Sidebar for Discussions/Groups -->
     <aside class="w-[15%] p-4 rounded-[16px] mx-4 my-4 relative mt-[80px]"></aside>
@@ -75,7 +75,7 @@
     </aside>
 
     <!-- Middle Section for Displaying Discussion -->
-    <main class="flex-1 p-4 flex flex-col items-center relative">
+    <main class="flex-1 pt-4 pr-4 pl-4 flex flex-col items-center relative">
       <!-- Bande de couleur sous le header (Keep this at full width) -->
       <div class="h-[80px] w-[81%] rounded-2xl bg-[rgba(9,21,30,0.9)] flex items-center justify-between px-4 mt-[80px] fixed z-40">
         <!-- Icon and Text on the Left -->
@@ -134,27 +134,31 @@
             </div>
           </div>
         </div>
-
-        <!-- Input for Sending Messages -->
-        <div *ngIf="userGroups.length > 0 || userConv.length > 0" class="w-full mt-4 flex items-center bg-[rgba(9,21,30,0.9)] p-3 rounded-2xl transition-all duration-300" [ngStyle]="{'width': isContainerVisible ? 'calc(100% - 27%)' : '100%'}">
-          <input type="text" [(ngModel)]="message" (keydown.enter)="sendMessage()" placeholder="Envoyer un message..."
-                 class="flex-1 font-light bg-[#202c34] border-2 border-[#3f4d54] text-white px-4 py-2 rounded focus:outline-none placeholder:text-[#ecfefe]"/>
-
-          <label class="h-8 w-8 ml-2 cursor-pointer">
-            <input type="file" (change)="onFileSelected($event)" class="hidden" [disabled]="userGroups.length === 0 && userConv.length === 0">
-            <span class="block h-full w-full bg-[url('src/assets/icons/Plus.svg')] bg-cover"></span>
-          </label>
-
-          <!-- Icon for sending message with background color -->
-          <span class="h-10 w-10 ml-2 bg-[#1ed7be] cursor-pointer flex items-center justify-center rounded">
-            <span (click)="sendMessage()" class="bg-paper-place-tilt-icon h-8 w-8"></span>
-          </span>
+        <!-- Image Preview -->
+        <div *ngIf="imagePreviewUrl" class="absolute top-[78%] ">
+          <img [src]="imagePreviewUrl" alt="Image Preview" class="preview-image">
         </div>
-      </div>
 
+        <div *ngIf="userGroups.length > 0 || userConv.length > 0" class="w-full mt-2 flex flex-col items-center bg-[rgba(9,21,30,0.9)] p-3 rounded-2xl transition-all duration-300" [ngStyle]="{'width': isContainerVisible ? 'calc(100% - 27%)' : '100%'}">
+          <div class="relative w-full flex items-center h-12">
+            <!-- Input for Sending Messages -->
+            <input type="text" [(ngModel)]="message" (keydown.enter)="sendMessage()" placeholder="Envoyer un message..."
+                   class="flex-1 font-light bg-[#202c34] border-2 border-[#3f4d54] text-white px-4 py-2 rounded focus:outline-none placeholder:text-[#ecfefe]"/>
+
+            <label class="h-8 w-8 ml-2 cursor-pointer">
+              <input type="file" (change)="onFileSelected($event)" class="hidden" [disabled]="userGroups.length === 0 && userConv.length === 0">
+              <span class="block h-full w-full bg-[url('src/assets/icons/Plus.svg')] bg-cover"></span>
+            </label>
+
+            <!-- Icon for sending message with background color -->
+            <span class="h-10 w-10 ml-2 bg-[#1ed7be] cursor-pointer flex items-center justify-center rounded">
+              <span (click)="sendMessage()" class="bg-paper-place-tilt-icon h-8 w-8"></span>
+            </span>
+          </div>
+        </div>
       <!-- Right Popup Container (Appears when isContainerVisible is true) -->
       <div id="infoContainer" [ngClass]="{'translate-x-full opacity-0': !isContainerVisible, 'translate-x-0 opacity-100': isContainerVisible}"
-           class="absolute right-0 min-h-[75%] w-[25%] bg-[rgba(9,21,30,0.9)] p-4 rounded-[16px] mx-4 mb-4 mt-48 transition-transform transition-opacity duration-300 transform overflow-y-auto">
+           class="absolute right-0 min-h-[75%] w-[25%] bg-[rgba(9,21,30,0.9)] p-4 rounded-[16px] mx-4 mb-4 transition-transform transition-opacity duration-300 transform overflow-y-auto">
 
         <!-- Text and Icon for Group Members, Icon Aligned to the Right -->
         <div class="flex items-center justify-between mb-4 max-h-[90%]">
@@ -162,35 +166,40 @@
           <span class="h-8 w-8 bg-user-plus-icon bg-cover cursor-pointer" (click)="togglePopupAddInGroup()"></span>
         </div>
 
-        <div [ngClass]="{'hidden': !isPopupAddInGroupVisible}" class="w-full h-[35%] bg-[rgba(9,21,30,1)] text-white rounded-lg flex flex-col p-4 z-50 border-white border">
-          <div class="w-full text-lg pb-5 font-semibold">Ajouter un membre au groupe</div>
+        <div *ngIf="isPopupAddInGroupVisible"
+             class="popup-container transition-all duration-300"
+             [ngClass]="{'popup-enter': isPopupAddInGroupVisible, 'popup-exit': !isPopupAddInGroupVisible}">
 
-          <label class="w-full font-light mb-2">Chercher un ou plusieurs noms d'utilisateur</label>
+          <div class="w-full h-[35%] bg-[rgba(9,21,30,1)] text-white rounded-lg flex flex-col p-4 z-50 border-white border">
+            <div class="w-full text-lg pb-5 font-semibold">Ajouter un membre au groupe</div>
 
-          <div class="flex h-[20%] w-full">
-            <input [(ngModel)]="memberListTmp" (keydown.enter)="addInGroupList()" type="text" placeholder="Entrez le nom d'un utilisateur"
-                   class="w-5/6 h-full bg-[#202c34] border-2 border-[#3f4d54] text-white px-4 py-2 rounded-l-lg focus:outline-none placeholder:text-[#ecfefe]"/>
+            <label class="w-full font-light mb-2">Chercher un ou plusieurs noms d'utilisateur</label>
 
-            <button (click)="addInGroupList()" class="w-1/6 h-full bg-[url('src/assets/icons/Plus.svg')] bg-no-repeat bg-center bg-contain rounded-r-lg focus:outline-none focus:ring-2 focus:ring-pink-400 transition-all duration-300 ease-in-out">&zwnj;</button>
-          </div>
-          <div class="w-full min-h-6 ">
-            <div *ngIf="isError" class="error-message">
-              <span class="text-red-600 right-0 min">{{errorMessage}}</span>
+            <div class="flex h-[20%] w-full">
+              <input [(ngModel)]="memberListTmp" (keydown.enter)="addInGroupList()" type="text" placeholder="Entrez le nom d'un utilisateur"
+                     class="w-5/6 h-full bg-[#202c34] border-2 border-[#3f4d54] text-white px-4 py-2 rounded-l-lg focus:outline-none placeholder:text-[#ecfefe]"/>
+
+              <button (click)="addInGroupList()" class="w-1/6 bg-[url('src/assets/icons/Plus.svg')] bg-no-repeat bg-center bg-contain rounded-r-lg focus:outline-none">&zwnj;</button>
             </div>
+
+            <div class="w-full min-h-6 ">
+              <div *ngIf="isError" class="error-message">
+                <span class="text-red-600 right-0 min">{{errorMessage}}</span>
+              </div>
+            </div>
+
+            <ul class="flex flex-col space-y-2 mt-4">
+              <li *ngFor="let name of memberList" class="flex items-center justify-between w-full bg-[#3f4d54] p-2 rounded">
+                {{name}}
+                <button (click)="removeInGroupList(name)" class="bg-red-500 text-white p-1 rounded">X</button>
+              </li>
+            </ul>
+
+            <button (click)="addInGroup()"
+                    class="w-full mt-4 bg-[#1ed7be] text-[#09151e] font-bold py-2 px-2 rounded-full shadow-lg hover:bg-gradient-to-r focus:outline-none transition-all duration-300 ease-in-out transform hover:scale-105">
+              Ajouter au groupe
+            </button>
           </div>
-
-
-          <ul class="flex flex-col space-y-2 mt-4">
-            <li *ngFor="let name of memberList" class="flex items-center justify-between w-full bg-[#3f4d54] p-2 rounded">
-              {{name}}
-              <button (click)="removeInGroupList(name)" class="bg-red-500 text-white p-1 rounded">X</button>
-            </li>
-          </ul>
-
-          <button (click)="addInGroup()"
-                  class="w-full mt-4 bg-[#1ed7be] text-[#09151e] font-bold py-2 px-2 rounded-full shadow-lg hover:bg-gradient-to-r focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-offset-2 transition-all duration-300 ease-in-out transform hover:scale-105">
-            Ajouter au groupe
-          </button>
         </div>
 
         <div class="flex-col space-y-4 overflow-y-auto mt-4 messageContainer" [ngClass]="{'h-[300px]': isPopupAddInGroupVisible, 'h-full': !isPopupAddInGroupVisible}" >
@@ -204,12 +213,11 @@
           </div>
         </div>
       </div>
-
-
-    </main>
+    </div>
+  </main>
   </div>
-  <div *ngIf="enlargedImageUrl" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50" (click)="closeImage()">
-    <img [src]="enlargedImageUrl" (click)="$event.stopPropagation()">
+  <div *ngIf="enlargedImageUrl" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50" (click)="enlargeImage(null)">
+    <img [src]="enlargedImageUrl" class=" cursor-pointer" (click)="enlargeImage(null); $event.stopPropagation()">
   </div>
 
   <!-- Popup de confirmation -->
