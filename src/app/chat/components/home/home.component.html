@@ -28,20 +28,50 @@
         <span class="h-8 w-8 bg-add-chat-icon cursor-pointer" (click)="togglePopup()"></span>
       </div>
 
+      <div *ngIf="isPopupVisible" class="w-full bg-[rgba(9,21,30,1)] text-white rounded-lg p-4 shadow-lg z-[1000] mb-6 border border-[#ecfefe]">
+        <!-- Popup Content -->
+        <div class="mb-4">
+          <h3 class="font-semibold text-lg">Créer une conversation</h3>
+        </div>
+
+        <label class="block my-2">Chercher un nom d'utilisateur</label>
+        <input type="text" [(ngModel)]="toConv" (keydown.enter)="addConv()" placeholder="Nom d'utilisateur" class="w-full font-light bg-[#202c34] border-2 border-[#3f4d54] text-white px-4 py-2 rounded focus:outline-none placeholder:text-[#ecfefe] mb-4"/>
+
+        <!-- Create Conversation Button -->
+        <button (click)="addConv()" class="bg-[#1ed7be] text-[#09151e] font-bold py-2 px-2 rounded-full shadow-lg hover:bg-gradient-to-r focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-offset-2 transition-all duration-300 ease-in-out transform hover:scale-105">
+          Créer une conversation
+        </button>
+
+        <div class="flex items-center my-6">
+          <div class="flex-grow border-t-2 border-[#3f4d54]"></div>
+          <span class="mx-4 text-white font-medium">ou</span>
+          <div class="flex-grow border-t-2 border-[#3f4d54]"></div>
+        </div>
+
+        <label class="block my-2">Choisir le nom du groupe</label>
+        <input type="text" [(ngModel)]="name" (keydown.enter)="addGroup()" placeholder="Nom de la conversation" class="w-full font-light bg-[#202c34] border-2 border-[#3f4d54] text-white px-4 py-2 rounded focus:outline-none placeholder:text-[#ecfefe] mb-4"/>
+
+        <!-- Create Conversation Button -->
+        <button (click)="addGroup()" class="w-3/4 bg-[#1ed7be] text-[#09151e] font-bold py-2 px-2 rounded-full shadow-lg hover:bg-gradient-to-r focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-offset-2 transition-all duration-300 ease-in-out transform hover:scale-105">
+          Créer un groupe
+        </button>
+      </div>
       <!-- Liste des groupes et conversations -->
+      <div class="overflow-y-auto messageContainer" [ngClass]="{'h-[38%]': isPopupVisible, 'h-[80%]': !isPopupVisible}">
       <ul class="space-y-4">
         <li *ngFor="let group of userGroups" class="flex justify-between items-center text-white cursor-pointer">
           <span class="h-8 w-8 mr-2 bg-chats-icon"></span>
           <span (click)="changeGroup(group.name)" class="hover:text-pink-300">{{ group.name }}</span>
-          <span (click)="confirmRemoveGroup(group.name)" class="h-8 w-8 bg-close-icon bg-cover"></span>
+          <span (click)="confirmRemoveGroup(group.name)" class="h-8 w-8 bg-close-icon bg-cover mr-3"></span>
         </li>
 
         <li *ngFor="let group of userConv" class="flex justify-between items-center text-white hover:text-pink-300 cursor-pointer">
           <span class="h-8 w-8 mr-2 bg-chat-icon"></span>
           <span (click)="changeGroup(group.name)">{{ getOtherParticipant(group.name) }}</span>
-          <span (click)="confirmRemoveGroup(group.name)" class="h-8 w-8 bg-close-icon bg-cover"></span>
+          <span (click)="confirmRemoveGroup(group.name)" class="h-8 w-8 bg-close-icon bg-cover mr-3"></span>
         </li>
       </ul>
+      </div>
     </aside>
 
     <!-- Middle Section for Displaying Discussion -->
@@ -67,8 +97,8 @@
         </div>
 
         <!-- Messages Display Area (Dynamically resized without centering) -->
-        <div *ngIf="userGroups.length > 0 || userConv.length > 0" #messageContainer class="flex flex-col h-[68vh] p-4 rounded-lg overflow-y-scroll transition-all duration-300"
-             id="messageContainer" [ngStyle]="{'width': isContainerVisible ? 'calc(100% - 27%)' : '100%'}">
+        <div *ngIf="userGroups.length > 0 || userConv.length > 0" class="messageContainer flex flex-col h-[68vh] p-4 rounded-lg overflow-y-scroll transition-all duration-300"
+             [ngStyle]="{'width': isContainerVisible ? 'calc(100% - 27%)' : '100%'}">
           <!-- Messages -->
           <div *ngFor="let message of messages" class="flex mb-4"
                [ngClass]="{'justify-end': message.user === pseudo, 'justify-start': message.user !== pseudo}">
@@ -132,7 +162,7 @@
           <span class="h-8 w-8 bg-user-plus-icon bg-cover cursor-pointer" (click)="togglePopupAddInGroup()"></span>
         </div>
 
-        <div [ngClass]="{'hidden': !isPopupAddInGroupVisible}" class="absolute w-[90%] h-[35%] bg-[rgba(9,21,30,1)] text-white rounded-lg flex flex-col p-4 z-50">
+        <div [ngClass]="{'hidden': !isPopupAddInGroupVisible}" class="w-full h-[35%] bg-[rgba(9,21,30,1)] text-white rounded-lg flex flex-col p-4 z-50 border-white border">
           <div class="w-full text-lg pb-5 font-semibold">Ajouter un membre au groupe</div>
 
           <label class="w-full font-light mb-2">Chercher un ou plusieurs noms d'utilisateur</label>
@@ -141,9 +171,7 @@
             <input [(ngModel)]="memberListTmp" (keydown.enter)="addInGroupList()" type="text" placeholder="Entrez le nom d'un utilisateur"
                    class="w-5/6 h-full bg-[#202c34] border-2 border-[#3f4d54] text-white px-4 py-2 rounded-l-lg focus:outline-none placeholder:text-[#ecfefe]"/>
 
-            <button (click)="addInGroupList()"
-                    class="w-1/6 h-full bg-[url('src/assets/icons/Plus.svg')] bg-no-repeat bg-center bg-contain rounded-r-lg focus:outline-none focus:ring-2 focus:ring-pink-400 transition-all duration-300 ease-in-out">
-            </button>
+            <button (click)="addInGroupList()" class="w-1/6 h-full bg-[url('src/assets/icons/Plus.svg')] bg-no-repeat bg-center bg-contain rounded-r-lg focus:outline-none focus:ring-2 focus:ring-pink-400 transition-all duration-300 ease-in-out">&zwnj;</button>
           </div>
           <div class="w-full min-h-6 ">
             <div *ngIf="isError" class="error-message">
@@ -164,7 +192,8 @@
             Ajouter au groupe
           </button>
         </div>
-        <div class="flex flex-col space-y-4">
+
+        <div class="flex-col space-y-4 overflow-y-auto mt-4 messageContainer" [ngClass]="{'h-[300px]': isPopupAddInGroupVisible, 'h-full': !isPopupAddInGroupVisible}" >
           <div *ngFor="let member of members" class="flex flex-col justify-between text-white">
             <!-- User Icon and Name -->
             <div class="flex justify-between pb-2.5">
@@ -176,34 +205,7 @@
         </div>
       </div>
 
-      <div *ngIf="isPopupVisible" class="absolute right-[102.5%] top-[15%] w-[15%] bg-[rgba(9,21,30,1)] text-white rounded-lg p-4 shadow-lg z-[1000] border border-[#ecfefe]">
-        <!-- Popup Content -->
-        <div class="mb-4">
-          <h3 class="font-semibold text-lg">Créer une conversation</h3>
-        </div>
 
-        <label class="block my-2">Chercher un nom d'utilisateur</label>
-        <input type="text" [(ngModel)]="toConv" (keydown.enter)="addConv()" placeholder="Nom d'utilisateur" class="w-full font-light bg-[#202c34] border-2 border-[#3f4d54] text-white px-4 py-2 rounded focus:outline-none placeholder:text-[#ecfefe] mb-4"/>
-
-        <!-- Create Conversation Button -->
-        <button (click)="addConv()" class="bg-[#1ed7be] text-[#09151e] font-bold py-2 px-2 rounded-full shadow-lg hover:bg-gradient-to-r focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-offset-2 transition-all duration-300 ease-in-out transform hover:scale-105">
-          Créer une conversation
-        </button>
-
-        <div class="flex items-center my-6">
-          <div class="flex-grow border-t-2 border-[#3f4d54]"></div>
-          <span class="mx-4 text-white font-medium">ou</span>
-          <div class="flex-grow border-t-2 border-[#3f4d54]"></div>
-        </div>
-
-        <label class="block my-2">Choisir le nom du groupe</label>
-        <input type="text" [(ngModel)]="name" (keydown.enter)="addGroup()" placeholder="Nom de la conversation" class="w-full font-light bg-[#202c34] border-2 border-[#3f4d54] text-white px-4 py-2 rounded focus:outline-none placeholder:text-[#ecfefe] mb-4"/>
-
-        <!-- Create Conversation Button -->
-        <button (click)="addGroup()" class="w-3/4 bg-[#1ed7be] text-[#09151e] font-bold py-2 px-2 rounded-full shadow-lg hover:bg-gradient-to-r focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-offset-2 transition-all duration-300 ease-in-out transform hover:scale-105">
-          Créer un groupe
-        </button>
-      </div>
     </main>
   </div>
   <div *ngIf="enlargedImageUrl" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50" (click)="closeImage()">

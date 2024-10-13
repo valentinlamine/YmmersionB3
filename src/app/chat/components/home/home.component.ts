@@ -56,11 +56,6 @@ export class HomeComponent implements OnInit {
             this.chatService.getUserGroups(this.pseudo).subscribe(groups => {
               this.userGroups = groups;
               console.log("User groups: ", this.userGroups);
-
-              // Check if there are any groups and set the first one as the active group
-              if (this.userGroups.length > 0) {
-                this.changeGroup(this.userGroups[0].name);
-              }
             });
 
             this.chatService.getUserConv(this.pseudo).subscribe(conv => {
