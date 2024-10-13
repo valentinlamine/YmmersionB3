@@ -16,6 +16,7 @@ export class HomeComponent implements OnInit {
   user: any;
   pseudo: string = '';
   group: string = '';
+  groupName: string = '';
   name: string = '';
   toConv: string = '';
   toAdd: string = '';
@@ -95,6 +96,10 @@ export class HomeComponent implements OnInit {
       this.messages = messages;
       console.log(this.messages);
     });
+  }
+
+  renameGroup() {
+    this.chatService.renameGroup(this.group, this.groupName);
   }
 
   onFileSelected(event: any) {

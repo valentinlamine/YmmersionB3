@@ -317,6 +317,18 @@ export class ChatService {
     });
   }
 
+  InGroup(toAdd: string, groupName: string): Observable<boolean> {
+    return this.getGroupByName(groupName).pipe(take(1), map(groupData => {
+        if (groupData) {
+          const {members} = groupData;
+          // Vérifier si le pseudo est déjà dans la liste des membres
+          return members.includes(toAdd);
+        }
+        return false;
+      })
+    );
+  }
+
   checkPseudoExists(toAdd: string): Observable<boolean> {
     return this.db.list('users', ref => ref.orderByChild('pseudo').equalTo(toAdd))
       .snapshotChanges()
@@ -331,6 +343,23 @@ export class ChatService {
       .pipe(
         map(changes => changes.length > 0) // Retourne `true` si au moins un groupe correspond
       );
+  }
+
+  renameGroup(oldName: string, newName: string) {
+    this.getGroupByName(oldName).pipe(take(1)).subscribe(groupData => {
+      if (groupData) {
+        const {key} = groupData;
+        this.db.object(`groupes/${key}`).update({name: newName})
+          .then(() => {
+            console.log(`Groupe ${oldName} renommé en ${newName}`);
+          })
+          .catch(error => {
+            console.error('Erreur lors du renommage du groupe :', error);
+          });
+      } else {
+        console.log(`Groupe ${oldName} introuvable pour le renommage.`);
+      }
+    });
   }
 
   async removeInGroup(toRemove: string, groupName: string): Promise<void> {
