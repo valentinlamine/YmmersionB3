@@ -49,24 +49,10 @@ npm install
 
 ### 2. Installez les dépendances
 Dans le fichier node_modules\@angular\fire\compat\database\interfaces.d.ts
-Remplacer les lignes 37 à 44 :
+Remplacer la fonction à ligne 47 par les lignes suivantes :
 
-```bash	
-export interface Action<T> {
-    type: ListenEvent;
-    payload: T;
-}
-export interface AngularFireAction<T> extends Action<T> {
-    prevKey: string | null | undefined;
-    key: string | null;
-}
 
-```
-
-Par les lignes suivantes :
-  
   ```bash
-  
   export interface DatabaseSnapshotExists<T> extends firebase.database.DataSnapshot {
     exists(): true;
     val(): T;
@@ -79,7 +65,6 @@ Par les lignes suivantes :
     // forEach(action: (a: DatabaseSnapshot<T>) => boolean): boolean;
     forEach(action: (a: firebase.database.DataSnapshot & { key: string }) => boolean | void): boolean;
   }
-
 ```
 
 #### 4. Lancez l'application
